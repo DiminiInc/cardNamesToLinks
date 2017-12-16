@@ -79,7 +79,7 @@ public class Main {
                 cardMap.get(rawData[1][i]).setPopularityStandard(Double.parseDouble(rawData[2][i]));
                 cardMap.get(rawData[1][i]).setCopiesStandard(Double.parseDouble(rawData[3][i]));
                 cardMap.get(rawData[1][i]).setWinrateStandard(Double.parseDouble(rawData[4][i]
-                        .replace("-","0")));
+                        .replace("-", "0")));
 //                System.out.println(rawData[1][i] + " , " + rawData[2][i] + " , " + rawData[3][i] + " , " +
 //                        rawData[4][i] + " , " + rawData[5][i] + " , " + rawData[6][i] + " , " + rawData[7][i]);
             }
@@ -108,7 +108,7 @@ public class Main {
                 cardMap.get(rawData[1][i]).setPopularityWild(Double.parseDouble(rawData[2][i]));
                 cardMap.get(rawData[1][i]).setCopiesWild(Double.parseDouble(rawData[3][i]));
                 cardMap.get(rawData[1][i]).setWinrateWild(Double.parseDouble(rawData[4][i].replace
-                        ("-","0")));
+                        ("-", "0")));
 //                System.out.println(rawData[1][i] + " , " + rawData[2][i] + " , " + rawData[3][i] + " , " +
 //                        rawData[4][i] + " , " + rawData[5][i] + " , " + rawData[6][i] + " , " + rawData[7][i]);
             }
@@ -127,44 +127,44 @@ public class Main {
         for (HashMap.Entry<String, CardData> entry : cardMap2.entrySet()) {
             if (!entry.getValue().isWild())
                 System.out.printf("<tr><td><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
-                        entry.getValue().getNameEN() + "</a></td><td>"+((entry.getValue().getRarity().equals("LEGENDARY")
-                ) ? "★" : "")+"</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
+                        entry.getValue().getNameEN() + "</a></td><td>" + ((entry.getValue().getRarity().equals("LEGENDARY")
+                ) ? "★" : "") + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
                         "%.6f" + "</td><td>" + "%.6f" +
-                        "</td><td>"+entry.getValue().getRarity()+"</td><td>"+entry.getValue().getGameSet()
-                        +"</td></tr>\n", (entry.getValue().getCopiesStandard() * 0.9 + entry.getValue().getCopiesWild
-                        () * 0.1),entry.getValue().getRatingStandard(),entry.getValue()
-                        .getRatingWild(),entry.getValue().getRatingOverall());
+                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getGameSet()
+                        + "</td></tr>\n", (entry.getValue().getCopiesStandard() * 0.9 + entry.getValue().getCopiesWild
+                        () * 0.1), entry.getValue().getRatingStandard(), entry.getValue()
+                        .getRatingWild(), entry.getValue().getRatingOverall());
             else
                 System.out.printf("<tr><td><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
-                        entry.getValue().getNameEN() + "</a></td><td>"+((entry.getValue().getRarity().equals("LEGENDARY")
-                ) ? "★" : "")+"</td><td>" + "%.4f" + "</td><td></td><td>" +
+                        entry.getValue().getNameEN() + "</a></td><td>" + ((entry.getValue().getRarity().equals("LEGENDARY")
+                ) ? "★" : "") + "</td><td>" + "%.4f" + "</td><td></td><td>" +
                         "%.6f" + "</td><td>" + "%.6f" +
-                        "</td><td>"+entry.getValue().getRarity()+"</td><td>"+entry.getValue().getGameSet()
-                        +"</td></tr>\n", entry.getValue().getCopiesWild(),entry.getValue()
-                        .getRatingWild(),entry.getValue().getRatingOverall());
+                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getGameSet()
+                        + "</td></tr>\n", entry.getValue().getCopiesWild(), entry.getValue()
+                        .getRatingWild(), entry.getValue().getRatingOverall());
             //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
         }
         System.out.println("\n\n\n\n\n");
         for (HashMap.Entry<String, CardData> entry : cardMap2.entrySet()) {
             if (!entry.getValue().isWild())
                 System.out.printf("<tr><td><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
-                        entry.getValue().getNameRU() + "</a></td><td>"+((entry.getValue().getRarity().equals
+                        entry.getValue().getNameRU() + "</a></td><td>" + ((entry.getValue().getRarity().equals
                         ("LEGENDARY")
-                ) ? "★" : "")+"</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
+                ) ? "★" : "") + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
                         "%.6f" + "</td><td>" + "%.6f" +
-                        "</td><td>"+entry.getValue().getRarity()+"</td><td>"+entry.getValue().getGameSet()
-                        +"</td></tr>\n", (entry.getValue().getCopiesStandard() * 0.9 + entry.getValue().getCopiesWild
-                        () * 0.1),entry.getValue().getRatingStandard(),entry.getValue()
-                        .getRatingWild(),entry.getValue().getRatingOverall());
+                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getGameSet()
+                        + "</td></tr>\n", (entry.getValue().getCopiesStandard() * 0.9 + entry.getValue().getCopiesWild
+                        () * 0.1), entry.getValue().getRatingStandard(), entry.getValue()
+                        .getRatingWild(), entry.getValue().getRatingOverall());
             else
                 System.out.printf("<tr><td><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
-                        entry.getValue().getNameRU() + "</a></td><td>"+((entry.getValue().getRarity().equals
+                        entry.getValue().getNameRU() + "</a></td><td>" + ((entry.getValue().getRarity().equals
                         ("LEGENDARY")
-                ) ? "★" : "")+"</td><td>" + "%.4f" + "</td><td></td><td>" +
+                ) ? "★" : "") + "</td><td>" + "%.4f" + "</td><td></td><td>" +
                         "%.6f" + "</td><td>" + "%.6f" +
-                        "</td><td>"+entry.getValue().getRarity()+"</td><td>"+entry.getValue().getGameSet()
-                        +"</td></tr>\n", entry.getValue().getCopiesWild(),entry.getValue()
-                        .getRatingWild(),entry.getValue().getRatingOverall());
+                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getGameSet()
+                        + "</td></tr>\n", entry.getValue().getCopiesWild(), entry.getValue()
+                        .getRatingWild(), entry.getValue().getRatingOverall());
             //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
         }
     }
