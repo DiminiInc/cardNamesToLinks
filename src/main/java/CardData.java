@@ -11,7 +11,7 @@ public class CardData implements Comparable<CardData> {
     public CardData(String nameEN, int id) {
         this.nameEN = nameEN;
         this.id = id;
-        this.wild=false;
+        this.wild=true;
     }
 
     public boolean isWild() {

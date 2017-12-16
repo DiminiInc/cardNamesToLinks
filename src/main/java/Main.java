@@ -76,6 +76,7 @@ public class Main {
                 }
             }
             for (int i = 1; i < cardsCounter; i++) {
+                cardMap.get(rawData[1][i]).setWild(false);
                 cardMap.get(rawData[1][i]).setPopularityStandard(Double.parseDouble(rawData[2][i]));
                 cardMap.get(rawData[1][i]).setCopiesStandard(Double.parseDouble(rawData[3][i]));
                 cardMap.get(rawData[1][i]).setWinrateStandard(Double.parseDouble(rawData[4][i]
@@ -104,7 +105,6 @@ public class Main {
                 }
             }
             for (int i = 1; i < cardsCounter; i++) {
-                cardMap.get(rawData[1][i]).setWild(true);
                 cardMap.get(rawData[1][i]).setPopularityWild(Double.parseDouble(rawData[2][i]));
                 cardMap.get(rawData[1][i]).setCopiesWild(Double.parseDouble(rawData[3][i]));
                 cardMap.get(rawData[1][i]).setWinrateWild(Double.parseDouble(rawData[4][i].replace
