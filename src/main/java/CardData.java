@@ -4,12 +4,22 @@
 public class CardData implements Comparable<CardData> {
     private String nameEN, nameRU, rarity, gameSet, type;
     int id;
+    boolean wild;
     private double popularityStandard, winrateStandard, copiesStandard, ratingStandard,
             popularityWild, winrateWild, copiesWild, ratingWild, ratingOverall;
 
     public CardData(String nameEN, int id) {
         this.nameEN = nameEN;
         this.id = id;
+        this.wild=false;
+    }
+
+    public boolean isWild() {
+        return wild;
+    }
+
+    public void setWild(boolean wild) {
+        this.wild = wild;
     }
 
     public double getPopularityStandard() {
