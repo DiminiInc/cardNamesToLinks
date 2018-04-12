@@ -114,11 +114,41 @@ public class Main {
             }
         }
 
+        try (BufferedReader br = new BufferedReader(new FileReader(new File("src\\main\\java\\cardsArena")))) {
+            String line = "";
+            cardsCounter = 0;
+            int counter = 0;
+            boolean finNames = false;
+            while (((line = br.readLine()) != null)) {
+                counter++;
+                if (finNames == false) {
+                    cardsCounter++;
+                    rawData[1][cardsCounter] = line;
+                    if (line.matches("\\d?\\d?\\d?.\\d?\\d?\\d?\\d?\\d?\\d?\\d?\\d?")) {
+                        rawData[2][1] = line;
+                        finNames = true;
+                    }
+                } else {
+                    rawData[(counter - cardsCounter) % 6 + 2][(counter - cardsCounter) / 6 + 1] = line;
+                }
+            }
+            for (int i = 1; i < cardsCounter; i++) {
+                cardMap.get(rawData[1][i]).setPopularityArena(Double.parseDouble(rawData[2][i]));
+                cardMap.get(rawData[1][i]).setCopiesArena(Double.parseDouble(rawData[3][i]));
+                cardMap.get(rawData[1][i]).setWinrateArena(Double.parseDouble(rawData[4][i].replace
+                        ("-", "0")));
+//                System.out.println(rawData[1][i] + " , " + rawData[2][i] + " , " + rawData[3][i] + " , " +
+//                        rawData[4][i] + " , " + rawData[5][i] + " , " + rawData[6][i] + " , " + rawData[7][i]);
+            }
+        }
+
         for (HashMap.Entry<String, CardData> entry : cardMap.entrySet()) {
             cardMap.get(entry.getKey()).setRatingStandard(entry.getValue().getPopularityStandard() * entry.getValue()
                     .getWinrateStandard() * 2 * 2030 / 30);
             cardMap.get(entry.getKey()).setRatingWild(entry.getValue().getPopularityWild() * entry.getValue()
                     .getWinrateWild() * 2 * 2711 / 30);
+            cardMap.get(entry.getKey()).setRatingArena(entry.getValue().getPopularityArena() * entry.getValue()
+                    .getWinrateArena() * 2 * 2711 / 30);
             cardMap.get(entry.getKey()).setRatingOverall(entry.getValue().getRatingStandard() * 0.9 + entry.getValue().getRatingWild() * 0.1);
         }
 
@@ -165,6 +195,53 @@ public class Main {
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getGameSet()
                         + "</td></tr>\n", entry.getValue().getCopiesWild(), entry.getValue()
                         .getRatingWild(), entry.getValue().getRatingOverall());
+            //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        }
+        System.out.println("\n\n\n\n\n");
+        for (HashMap.Entry<String, CardData> entry : cardMap.entrySet()) {
+            cardMap.get(entry.getKey()).setRatingOverall(entry.getValue().getRatingArena());
+        }
+
+        HashMap<String, CardData> cardMap3 = new HashMap<>();
+        cardMap3 = sortByValue(cardMap);
+        for (HashMap.Entry<String, CardData> entry : cardMap3.entrySet()) {
+            if (entry.getValue().getRarity().equals("LEGENDARY"))
+                System.out.printf("<tr><td><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
+                        entry.getValue().getNameEN() + "</a></td><td>" + ((entry.getValue().getRarity().equals
+                        ("LEGENDARY")
+                ) ? "★" : "") + "</td><td>" + "%.4f" + "</td><td>"+ "%.6f" +
+                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getGameSet()
+                        + "</td></tr>\n", (entry.getValue().getCopiesArena()), entry.getValue().getRatingOverall());
+            //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        }
+        for (HashMap.Entry<String, CardData> entry : cardMap3.entrySet()) {
+            if (entry.getValue().getRarity().equals("EPIC"))
+                System.out.printf("<tr><td><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
+                        entry.getValue().getNameEN() + "</a></td><td>" + ((entry.getValue().getRarity().equals
+                        ("LEGENDARY")
+                ) ? "★" : "") + "</td><td>" + "%.4f" + "</td><td>"+ "%.6f" +
+                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getGameSet()
+                        + "</td></tr>\n", (entry.getValue().getCopiesArena()), entry.getValue().getRatingOverall());
+            //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        }
+        for (HashMap.Entry<String, CardData> entry : cardMap3.entrySet()) {
+            if (entry.getValue().getRarity().equals("RARE"))
+                System.out.printf("<tr><td><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
+                        entry.getValue().getNameEN() + "</a></td><td>" + ((entry.getValue().getRarity().equals
+                        ("LEGENDARY")
+                ) ? "★" : "") + "</td><td>" + "%.4f" + "</td><td>"+ "%.6f" +
+                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getGameSet()
+                        + "</td></tr>\n", (entry.getValue().getCopiesArena()), entry.getValue().getRatingOverall());
+            //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+        }
+        for (HashMap.Entry<String, CardData> entry : cardMap3.entrySet()) {
+            if (entry.getValue().getRarity().equals("COMMON")||entry.getValue().getRarity().equals("FREE"))
+                System.out.printf("<tr><td><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
+                        entry.getValue().getNameEN() + "</a></td><td>" + ((entry.getValue().getRarity().equals
+                        ("LEGENDARY")
+                ) ? "★" : "") + "</td><td>" + "%.4f" + "</td><td>"+ "%.6f" +
+                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getGameSet()
+                        + "</td></tr>\n", (entry.getValue().getCopiesArena()), entry.getValue().getRatingOverall());
             //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
         }
     }

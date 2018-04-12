@@ -6,7 +6,40 @@ public class CardData implements Comparable<CardData> {
     int id;
     boolean wild;
     private double popularityStandard, winrateStandard, copiesStandard, ratingStandard,
-            popularityWild, winrateWild, copiesWild, ratingWild, ratingOverall;
+            popularityWild, winrateWild, copiesWild, ratingWild, ratingOverall,
+            popularityArena, winrateArena, copiesArena, ratingArena;
+
+    public double getPopularityArena() {
+        return popularityArena;
+    }
+
+    public void setPopularityArena(double popularityArena) {
+        this.popularityArena = popularityArena;
+    }
+
+    public double getWinrateArena() {
+        return winrateArena;
+    }
+
+    public void setWinrateArena(double winrateArena) {
+        this.winrateArena = winrateArena;
+    }
+
+    public double getCopiesArena() {
+        return copiesArena;
+    }
+
+    public void setCopiesArena(double copiesArena) {
+        this.copiesArena = copiesArena;
+    }
+
+    public double getRatingArena() {
+        return ratingArena;
+    }
+
+    public void setRatingArena(double ratingArena) {
+        this.ratingArena = ratingArena;
+    }
 
     public CardData(String nameEN, int id) {
         this.nameEN = nameEN;
@@ -160,6 +193,10 @@ public class CardData implements Comparable<CardData> {
                 ", copiesWild=" + copiesWild +
                 ", ratingWild=" + ratingWild +
                 ", ratingOverall=" + ratingOverall +
+                ", popularityArena=" + popularityArena +
+                ", winrateArena=" + winrateArena +
+                ", copiesArena=" + copiesArena +
+                ", ratingArena=" + ratingArena +
                 '}';
     }
 
