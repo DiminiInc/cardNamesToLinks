@@ -2,7 +2,7 @@
  * Created by Yaskovich Dmitry on 15/12/2017.
  */
 public class CardData implements Comparable<CardData> {
-    private String nameEN, nameRU, rarity, gameSet, type;
+    private String nameEN, nameRU, rarity, gameSet, type, imageID;
     int id;
     boolean wild;
     private double popularityStandard, winrateStandard, copiesStandard, ratingStandard,
@@ -173,6 +173,14 @@ public class CardData implements Comparable<CardData> {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getImageID() {
+        return imageID;
+    }
+
+    public void setImageID(String imageID) {
+        this.imageID = imageID;
     }
 
     @Override
