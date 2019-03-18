@@ -169,11 +169,8 @@ public class Main {
         cardMap2 = sortByValue(cardMap);
         for (HashMap.Entry<String, CardData> entry : cardMap2.entrySet()) {
             if (!entry.getValue().isWild())
-                outputEN.append(String.format("<tr><td style=\"background: linear-gradient(-90deg, rgba(255,255,255,0), rgba(255,255,255,0)," +
-                        " rgba(255,255,255,0), " +
-                        "rgba(86,85,85,1), rgba(42,42,42,1), rgba(29,29,29,1)), url(https://art.hearthstonejson.com/v1/tiles/"
-                        + entry.getValue().getImageID() + ".png) right -5px center; " +
-                        "\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
+                outputEN.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
+                        + entry.getValue().getImageID() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
                         entry.getValue().getNameEN() + " " + ((entry.getValue().getGameSet().equals("UNGORO") ||
                         entry.getValue().getGameSet().equals("ICECROWN") || entry.getValue().getGameSet().equals("LOOTAPALOOZA")
                 ) ? "<a href=\"https://playhearthstone.com/en-us/blog/22912682\" " +
@@ -185,21 +182,18 @@ public class Main {
                         entry.getValue().getNameEN().equals("Doomguard") || entry.getValue().getNameEN().equals("Divine Favor")
                 ) ? "<a href=\"https://playhearthstone.com/en-us/blog/22912682\" " +
                         "title=\"This card will be moved to Hall of Fame soon\" style=\"color: #e80808;\">&#9888;</a>"
-                        : "") + "</a></td><td>" + ((entry.getValue().getRarity().equals("LEGENDARY")
-                ) ? "★" : "") + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
+                        : "") + "</a>"+((entry.getValue().getRarity().equals("LEGENDARY")
+                ) ? "<div class=\"legendary-star\">★</div>" : "")+"</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
                         "%.6f" + "</td><td>" + "%.6f" +
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getGameSet()
                         + "</td></tr>\n", (entry.getValue().getCopiesStandard() * 0.9 + entry.getValue().getCopiesWild
                         () * 0.1), entry.getValue().getRatingOverall(), entry.getValue().getRatingStandard(), entry.getValue()
                         .getRatingWild()));
             else
-                outputEN.append(String.format("<tr><td  style=\"background: linear-gradient(-90deg, rgba(255,255,255,0), rgba(255,255,255,0)," +
-                        " rgba(255,255,255,0), " +
-                        "rgba(86,85,85,1), rgba(42,42,42,1), rgba(29,29,29,1)), url(https://art.hearthstonejson.com/v1/tiles/"
-                        + entry.getValue().getImageID() + ".png) right -5px center; " +
-                        "\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
-                        entry.getValue().getNameEN() + "</a></td><td>" + ((entry.getValue().getRarity().equals("LEGENDARY")
-                ) ? "★" : "") + "</td><td>" + "%.4f" + "</td><td>" +
+                outputEN.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
+                        + entry.getValue().getImageID() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
+                        entry.getValue().getNameEN() + "</a>"+((entry.getValue().getRarity().equals("LEGENDARY")
+                ) ? "<div class=\"legendary-star\">★</div>" : "")+"</td><td>" + "%.4f" + "</td><td>" +
                         "%.6f" + "</td><td></td><td>" + "%.6f" +
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getGameSet()
                         + "</td></tr>\n", entry.getValue().getCopiesWild(), entry.getValue().getRatingOverall(), entry.getValue()
@@ -210,11 +204,8 @@ public class Main {
         System.out.println("\nEN Complete\n");
         for (HashMap.Entry<String, CardData> entry : cardMap2.entrySet()) {
             if (!entry.getValue().isWild())
-                outputRU.append(String.format("<tr><td style=\"background: linear-gradient(-90deg, rgba(255,255,255,0), rgba(255,255,255,0)," +
-                        " rgba(255,255,255,0), " +
-                        "rgba(86,85,85,1), rgba(42,42,42,1), rgba(29,29,29,1)), url(https://art.hearthstonejson.com/v1/tiles/"
-                        + entry.getValue().getImageID() + ".png) right -5px center; " +
-                        "\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
+                outputRU.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
+                        + entry.getValue().getImageID() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
                         entry.getValue().getNameRU() + " " + ((entry.getValue().getGameSet().equals("UNGORO") ||
                         entry.getValue().getGameSet().equals("ICECROWN") || entry.getValue().getGameSet().equals("LOOTAPALOOZA")
                 ) ? "<a href=\"https://playhearthstone.com/en-us/blog/22912682\" " +
@@ -226,23 +217,18 @@ public class Main {
                         entry.getValue().getNameEN().equals("Doomguard") || entry.getValue().getNameEN().equals("Divine Favor")
                 ) ? "<a href=\"https://playhearthstone.com/en-us/blog/22912682\" " +
                         "title=\"Данная карта скоро будет перемещена в Зал Славы\" style=\"color: #e80808;\">&#9888;</a>"
-                        : "") + "</a></td><td>" + ((entry.getValue().getRarity().equals
-                        ("LEGENDARY")
-                ) ? "★" : "") + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
+                        : "") + "</a>"+((entry.getValue().getRarity().equals("LEGENDARY")
+                ) ? "<div class=\"legendary-star\">★</div>" : "")+"</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
                         "%.6f" + "</td><td>" + "%.6f" +
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getGameSet()
                         + "</td></tr>\n", (entry.getValue().getCopiesStandard() * 0.9 + entry.getValue().getCopiesWild
                         () * 0.1), entry.getValue().getRatingOverall(), entry.getValue().getRatingStandard(), entry.getValue()
                         .getRatingWild()));
             else
-                outputRU.append(String.format("<tr><td style=\"background: linear-gradient(-90deg, rgba(255,255,255,0), rgba(255,255,255,0)," +
-                        " rgba(255,255,255,0), " +
-                        "rgba(86,85,85,1), rgba(42,42,42,1), rgba(29,29,29,1)), url(https://art.hearthstonejson.com/v1/tiles/"
-                        + entry.getValue().getImageID() + ".png) right -5px center; " +
-                        "\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
-                        entry.getValue().getNameRU() + "</a></td><td>" + ((entry.getValue().getRarity().equals
-                        ("LEGENDARY")
-                ) ? "★" : "") + "</td><td>" + "%.4f" + "</td><td>" +
+                outputRU.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
+                        + entry.getValue().getImageID() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
+                        entry.getValue().getNameRU() + "</a>"+((entry.getValue().getRarity().equals("LEGENDARY")
+                ) ? "<div class=\"legendary-star\">★</div>" : "")+"</td><td>" + "%.4f" + "</td><td>" +
                         "%.6f" + "</td><td></td><td>" + "%.6f" +
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getGameSet()
                         + "</td></tr>\n", entry.getValue().getCopiesWild(), entry.getValue().getRatingOverall(), entry.getValue()
