@@ -1,15 +1,11 @@
-import java.io.FileReader;
 import java.io.IOException;
 
-import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -24,12 +20,15 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Writer outputRU, outputEN, outputArenaEN, dateRU, dateEN;
+        int standardLegendary=0, standardOther=0, wildLegendary=0, wildOther=0, arenaLegendary=0, arenaOther=0;
         String[] monthEN = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
         String[] monthRU = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
         String[] wildSets = {"HOF", "NAXX", "GVG", "BRM", "TGT", "LOE", "OG", "KARA", "GANGS", "UNGORO", "ICECROWN", "LOOTAPALOOZA"};
+        String[] redList = {"https://playhearthstone.com/en-us/blog/22990356/", "https://playhearthstone.com/ru-ru/blog/22990356/", "This card was modified recently", "Эта карта была недавно изменена", "EVIL Miscreant", "Raiding Party", "Preparation", "Archivist Elysiana"};
+        String [] yellowList = {"https://playhearthstone.com/en-us/blog/22990355/", "https://playhearthstone.com/ru-ru/blog/22990355/", "This card will be modified soon", "Эта карта скоро будет изменена","Gloop Sprayer", "Mulchmuncher", "Necromechanic", "Flark's Boom-Zooka", "Unexpected Results", "Luna's Pocket Galaxy", "Crystology", "Glowstone Technician", "Extra Arms", "Cloning Device", "Pogo-Hopper", "Violet Haze", "The Storm Bringer", "Thunderhead", "Spirit Bomb", "Dr. Morrigan", "Security Rover", "Beryllium Nullifier"};
         outputEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone-cards-rating/cards-data.php"));  //clears file every time
         outputRU = new BufferedWriter(new FileWriter("../Site Dev/ru/statistics/games/hearthstone-cards-rating/cards-data.php"));
-        outputArenaEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone-arena-tier-list/cards-data.php"));  //clears file every time
+        //outputArenaEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone-arena-tier-list/cards-data.php"));  //clears file every time
         HashMap<Integer, CardData> cardMap = new HashMap<>();
 
         String jsonString = jsonGetRequest("https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json");
@@ -44,8 +43,24 @@ public class Main {
             tempCard.setRarity((String) jsonObject.get("rarity"));
             tempCard.setSet((String) jsonObject.get("set"));
             tempCard.setType((String) jsonObject.get("type"));
-            if (!(jsonObject.get("type").equals("HERO") && jsonObject.get("set").equals("CORE")) && !jsonObject.get("set").equals("HERO_SKINS"))
+            if (!(jsonObject.get("type").equals("HERO") && jsonObject.get("set").equals("CORE")) && !jsonObject.get("set").equals("HERO_SKINS")) {
                 cardMap.put((Integer) jsonObject.get("dbfId"), tempCard);
+                if (Arrays.stream(wildSets).anyMatch(tempCard.getSet()::equals))
+                    if (tempCard.getRarity().equals("LEGENDARY"))
+                        wildLegendary++;
+                    else
+                        wildOther++;
+                 else
+                    if (tempCard.getRarity().equals("LEGENDARY")) {
+                        standardLegendary++;
+                        wildLegendary++;
+                    }
+                    else {
+                        standardOther++;
+                        wildOther++;
+                    }
+
+            }
         }
 
         jsonString = jsonGetRequest("https://api.hearthstonejson.com/v1/latest/ruRU/cards.collectible.json");
@@ -64,6 +79,7 @@ public class Main {
         JSONObject jsonObj;
         String jsonStringExpansion = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_STANDARD&TimeRange=CURRENT_EXPANSION&RankRange=ALL");
         String jsonStringTwoWeeks = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_STANDARD&TimeRange=LAST_14_DAYS&RankRange=ALL");
+        String jsonStringPatch = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_STANDARD&TimeRange=CURRENT_PATCH&RankRange=ALL");
         JSONObject jsonObjectExpansion = new JSONObject(jsonStringExpansion);
         jsonObjectExpansion = jsonObjectExpansion.getJSONObject("series");
         jsonObjectExpansion = jsonObjectExpansion.getJSONObject("metadata");
@@ -72,10 +88,20 @@ public class Main {
         jsonObjectTwoWeeks = jsonObjectTwoWeeks.getJSONObject("series");
         jsonObjectTwoWeeks = jsonObjectTwoWeeks.getJSONObject("metadata");
         int playedTwoWeeks = (int) jsonObjectTwoWeeks.get("total_played_decks_count");
+        JSONObject jsonObjectPatch = new JSONObject(jsonStringPatch);
+        jsonObjectPatch = jsonObjectPatch.getJSONObject("series");
+        jsonObjectPatch = jsonObjectPatch.getJSONObject("metadata");
+        int playedPatch = (int) jsonObjectPatch.get("total_played_decks_count");
         if (playedExpansion < playedTwoWeeks)
-            jsonObj = new JSONObject(jsonStringExpansion);
+            if (playedExpansion< playedPatch)
+                jsonObj = new JSONObject(jsonStringExpansion);
+            else
+                jsonObj = new JSONObject(jsonStringPatch);
         else
-            jsonObj = new JSONObject(jsonStringTwoWeeks);
+            if (playedTwoWeeks<playedPatch)
+                jsonObj = new JSONObject(jsonStringTwoWeeks);
+            else
+                jsonObj = new JSONObject(jsonStringPatch);
         jsonObj = jsonObj.getJSONObject("series");
         jsonObj = jsonObj.getJSONObject("data");
         json = jsonObj.getJSONArray("ALL");
@@ -89,6 +115,7 @@ public class Main {
         }
         jsonStringExpansion = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_WILD&TimeRange=CURRENT_EXPANSION&RankRange=ALL");
         jsonStringTwoWeeks = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_WILD&TimeRange=LAST_14_DAYS&RankRange=ALL");
+        jsonStringPatch = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_WILD&TimeRange=CURRENT_PATCH&RankRange=ALL");
         jsonObjectExpansion = new JSONObject(jsonStringExpansion);
         jsonObjectExpansion = jsonObjectExpansion.getJSONObject("series");
         jsonObjectExpansion = jsonObjectExpansion.getJSONObject("metadata");
@@ -97,10 +124,20 @@ public class Main {
         jsonObjectTwoWeeks = jsonObjectTwoWeeks.getJSONObject("series");
         jsonObjectTwoWeeks = jsonObjectTwoWeeks.getJSONObject("metadata");
         playedTwoWeeks = (int) jsonObjectTwoWeeks.get("total_played_decks_count");
+        jsonObjectPatch = new JSONObject(jsonStringPatch);
+        jsonObjectPatch = jsonObjectPatch.getJSONObject("series");
+        jsonObjectPatch = jsonObjectPatch.getJSONObject("metadata");
+        playedPatch = (int) jsonObjectPatch.get("total_played_decks_count");
         if (playedExpansion < playedTwoWeeks)
-            jsonObj = new JSONObject(jsonStringExpansion);
+            if (playedExpansion< playedPatch)
+                jsonObj = new JSONObject(jsonStringExpansion);
+            else
+                jsonObj = new JSONObject(jsonStringPatch);
         else
-            jsonObj = new JSONObject(jsonStringTwoWeeks);
+            if (playedTwoWeeks<playedPatch)
+                jsonObj = new JSONObject(jsonStringTwoWeeks);
+            else
+                jsonObj = new JSONObject(jsonStringPatch);
         jsonObj = jsonObj.getJSONObject("series");
         jsonObj = jsonObj.getJSONObject("data");
         json = jsonObj.getJSONArray("ALL");
@@ -114,6 +151,7 @@ public class Main {
         }
         jsonStringExpansion = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=ARENA&TimeRange=CURRENT_EXPANSION&RankRange=ALL");
         jsonStringTwoWeeks = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=ARENA&TimeRange=LAST_14_DAYS&RankRange=ALL");
+        jsonStringPatch = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=ARENA&TimeRange=CURRENT_PATCH&RankRange=ALL");
         jsonObjectExpansion = new JSONObject(jsonStringExpansion);
         jsonObjectExpansion = jsonObjectExpansion.getJSONObject("series");
         jsonObjectExpansion = jsonObjectExpansion.getJSONObject("metadata");
@@ -122,10 +160,20 @@ public class Main {
         jsonObjectTwoWeeks = jsonObjectTwoWeeks.getJSONObject("series");
         jsonObjectTwoWeeks = jsonObjectTwoWeeks.getJSONObject("metadata");
         playedTwoWeeks = (int) jsonObjectTwoWeeks.get("total_played_decks_count");
+        jsonObjectPatch = new JSONObject(jsonStringPatch);
+        jsonObjectPatch = jsonObjectPatch.getJSONObject("series");
+        jsonObjectPatch = jsonObjectPatch.getJSONObject("metadata");
+        playedPatch = (int) jsonObjectPatch.get("total_played_decks_count");
         if (playedExpansion < playedTwoWeeks)
-            jsonObj = new JSONObject(jsonStringExpansion);
+            if (playedExpansion< playedPatch)
+                jsonObj = new JSONObject(jsonStringExpansion);
+            else
+                jsonObj = new JSONObject(jsonStringPatch);
         else
-            jsonObj = new JSONObject(jsonStringTwoWeeks);
+            if (playedTwoWeeks<playedPatch)
+                jsonObj = new JSONObject(jsonStringTwoWeeks);
+            else
+                jsonObj = new JSONObject(jsonStringPatch);
         jsonObj = jsonObj.getJSONObject("series");
         jsonObj = jsonObj.getJSONObject("data");
         json = jsonObj.getJSONArray("ALL");
@@ -141,9 +189,9 @@ public class Main {
 
         for (HashMap.Entry<Integer, CardData> entry : cardMap.entrySet()) {
             cardMap.get(entry.getKey()).setRatingStandard(entry.getValue().getPopularityStandard() * entry.getValue()
-                    .getWinrateStandard() * 2 * 1703 / 300000);
+                    .getWinrateStandard() * 2 * (standardLegendary+standardOther*2) / 300000);
             cardMap.get(entry.getKey()).setRatingWild(entry.getValue().getPopularityWild() * entry.getValue()
-                    .getWinrateWild() * 2 * 3707 / 300000);
+                    .getWinrateWild() * 2 * (wildLegendary+wildOther*2) / 300000);
             cardMap.get(entry.getKey()).setRatingArena(entry.getValue().getPopularityArena() * entry.getValue()
                     .getWinrateArena() * 2 * 2711 / 300000);
             cardMap.get(entry.getKey()).setRatingOverall(entry.getValue().getRatingStandard() * 0.9 + entry.getValue().getRatingWild() * 0.1);
@@ -176,7 +224,9 @@ public class Main {
 //                        .getRatingWild()));
                 outputEN.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
                         + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
-                        entry.getValue().getNameEN() + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
+                        entry.getValue().getNameEN() + (Arrays.stream(redList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+redList[0]+"\" title=\""+redList[2]+"\" style=\"color: #e80808;\">&#9888;</a>" : "")
+                        + (Arrays.stream(yellowList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+yellowList[0]+"\" title=\""+yellowList[2]+"\" style=\"color: #ffd633;\">&#9888;</a>" : "")
+                        +"</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
                 ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
                         "%.6f" + "</td><td>" + "%.6f" +
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
@@ -186,7 +236,9 @@ public class Main {
             else
                 outputEN.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
                         + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
-                        entry.getValue().getNameEN() + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
+                        entry.getValue().getNameEN() + (Arrays.stream(redList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+redList[0]+"\" title=\""+redList[2]+"\" style=\"color: #e80808;\">&#9888;</a>" : "")
+                        + (Arrays.stream(yellowList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+yellowList[0]+"\" title=\""+yellowList[2]+"\" style=\"color: #ffd633;\">&#9888;</a>" : "")
+                        + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
                 ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td>" + "%.4f" + "</td><td>" +
                         "%.6f" + "</td><td></td><td>" + "%.6f" +
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
@@ -200,7 +252,9 @@ public class Main {
             if (!entry.getValue().isWild())
                 outputRU.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
                         + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
-                        entry.getValue().getNameRU() + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
+                        entry.getValue().getNameRU() + (Arrays.stream(redList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+redList[1]+"\" title=\""+redList[3]+"\" style=\"color: #e80808;\">&#9888;</a>" : "")
+                        + (Arrays.stream(yellowList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+yellowList[1]+"\" title=\""+yellowList[3]+"\" style=\"color: #ffd633;\">&#9888;</a>" : "")
+                        + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
                 ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
                         "%.6f" + "</td><td>" + "%.6f" +
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
@@ -210,7 +264,9 @@ public class Main {
             else
                 outputRU.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
                         + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
-                        entry.getValue().getNameRU() + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
+                        entry.getValue().getNameRU() + (Arrays.stream(redList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+redList[1]+"\" title=\""+redList[3]+"\" style=\"color: #e80808;\">&#9888;</a>" : "")
+                        + (Arrays.stream(yellowList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+yellowList[1]+"\" title=\""+yellowList[3]+"\" style=\"color: #ffd633;\">&#9888;</a>" : "")
+                        + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
                 ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td>" + "%.4f" + "</td><td>" +
                         "%.6f" + "</td><td></td><td>" + "%.6f" +
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
@@ -226,16 +282,16 @@ public class Main {
             cardMap.get(entry.getKey()).setRatingOverall(entry.getValue().getRatingArena());
         }
 
-        for (HashMap.Entry<Integer, CardData> entry : cardMap2.entrySet()) {
-            outputArenaEN.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
-                    + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
-                    entry.getValue().getNameEN() + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
-            ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
-                    "%.6f" + "</td><td>" +
-                    "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
-                    + "</td></tr>\n", entry.getValue().getCopiesArena() * 10, entry.getValue().getRatingOverall(), entry.getValue().getRatingStandard()));
-
-        }
+//        for (HashMap.Entry<Integer, CardData> entry : cardMap2.entrySet()) {
+//            outputArenaEN.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
+//                    + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
+//                    entry.getValue().getNameEN() + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
+//            ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
+//                    "%.6f" + "</td><td>" +
+//                    "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
+//                    + "</td></tr>\n", entry.getValue().getCopiesArena() * 10, entry.getValue().getRatingOverall(), entry.getValue().getRatingStandard()));
+//
+//        }
 
         dateEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone-cards-rating/current-date.php"));  //clears file every time
         dateRU = new BufferedWriter(new FileWriter("../Site Dev/ru/statistics/games/hearthstone-cards-rating/current-date.php"));
@@ -244,11 +300,11 @@ public class Main {
         dateEN.close();
         dateRU.close();
         outputEN.close();
-        outputArenaEN.close();
+        //outputArenaEN.close();
         outputRU.close();
     }
 
-    public static <K, V extends Comparable<? super V>> HashMap<K, V> sortByValue(HashMap<K, V> map) {
+    private static <K, V extends Comparable<? super V>> HashMap<K, V> sortByValue(HashMap<K, V> map) {
         return map.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
@@ -261,11 +317,10 @@ public class Main {
     }
 
     private static String streamToString(InputStream inputStream) {
-        String text = new Scanner(inputStream, "UTF-8").useDelimiter("\\Z").next();
-        return text;
+        return new Scanner(inputStream, "UTF-8").useDelimiter("\\Z").next();
     }
 
-    public static String jsonGetRequest(String urlQueryString) {
+    private static String jsonGetRequest(String urlQueryString) {
         String json = null;
         System.setProperty("http.agent", "Chrome");
         try {
