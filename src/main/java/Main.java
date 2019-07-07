@@ -24,8 +24,10 @@ public class Main {
         String[] monthEN = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
         String[] monthRU = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
         String[] wildSets = {"HOF", "NAXX", "GVG", "BRM", "TGT", "LOE", "OG", "KARA", "GANGS", "UNGORO", "ICECROWN", "LOOTAPALOOZA"};
-        String[] redList = {"https://playhearthstone.com/en-us/blog/22990356/", "https://playhearthstone.com/ru-ru/blog/22990356/", "This card was modified recently", "Эта карта была недавно изменена", "EVIL Miscreant", "Raiding Party", "Preparation", "Archivist Elysiana"};
-        String [] yellowList = {"https://playhearthstone.com/en-us/blog/22990355/", "https://playhearthstone.com/ru-ru/blog/22990355/", "This card will be modified soon", "Эта карта скоро будет изменена","Gloop Sprayer", "Mulchmuncher", "Necromechanic", "Flark's Boom-Zooka", "Unexpected Results", "Luna's Pocket Galaxy", "Crystology", "Glowstone Technician", "Extra Arms", "Cloning Device", "Pogo-Hopper", "Violet Haze", "The Storm Bringer", "Thunderhead", "Spirit Bomb", "Dr. Morrigan", "Security Rover", "Beryllium Nullifier"};
+        String[] redList = {};
+        String [] yellowList = {};
+        //String[] redList = {"https://playhearthstone.com/en-us/blog/22990356/", "https://playhearthstone.com/ru-ru/blog/22990356/", "This card was modified recently", "Эта карта была недавно изменена", "EVIL Miscreant", "Raiding Party", "Preparation", "Archivist Elysiana"};
+        //String [] yellowList = {"https://playhearthstone.com/en-us/blog/22990355/", "https://playhearthstone.com/ru-ru/blog/22990355/", "This card will be modified soon", "Эта карта скоро будет изменена","Gloop Sprayer", "Mulchmuncher", "Necromechanic", "Flark's Boom-Zooka", "Unexpected Results", "Luna's Pocket Galaxy", "Crystology", "Glowstone Technician", "Extra Arms", "Cloning Device", "Pogo-Hopper", "Violet Haze", "The Storm Bringer", "Thunderhead", "Spirit Bomb", "Dr. Morrigan", "Security Rover", "Beryllium Nullifier"};
         outputEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone-cards-rating/cards-data.php"));  //clears file every time
         outputRU = new BufferedWriter(new FileWriter("../Site Dev/ru/statistics/games/hearthstone-cards-rating/cards-data.php"));
         //outputArenaEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone-arena-tier-list/cards-data.php"));  //clears file every time
@@ -92,13 +94,13 @@ public class Main {
         jsonObjectPatch = jsonObjectPatch.getJSONObject("series");
         jsonObjectPatch = jsonObjectPatch.getJSONObject("metadata");
         int playedPatch = (int) jsonObjectPatch.get("total_played_decks_count");
-        if (playedExpansion < playedTwoWeeks)
+        if ((playedExpansion < playedTwoWeeks) && (playedExpansion!=0))
             if (playedExpansion< playedPatch)
                 jsonObj = new JSONObject(jsonStringExpansion);
             else
                 jsonObj = new JSONObject(jsonStringPatch);
         else
-            if (playedTwoWeeks<playedPatch)
+            if ((playedTwoWeeks<playedPatch) || (playedPatch==0))
                 jsonObj = new JSONObject(jsonStringTwoWeeks);
             else
                 jsonObj = new JSONObject(jsonStringPatch);
@@ -128,13 +130,13 @@ public class Main {
         jsonObjectPatch = jsonObjectPatch.getJSONObject("series");
         jsonObjectPatch = jsonObjectPatch.getJSONObject("metadata");
         playedPatch = (int) jsonObjectPatch.get("total_played_decks_count");
-        if (playedExpansion < playedTwoWeeks)
+        if ((playedExpansion < playedTwoWeeks) && (playedExpansion!=0))
             if (playedExpansion< playedPatch)
                 jsonObj = new JSONObject(jsonStringExpansion);
             else
                 jsonObj = new JSONObject(jsonStringPatch);
         else
-            if (playedTwoWeeks<playedPatch)
+            if ((playedTwoWeeks<playedPatch) || (playedPatch==0))
                 jsonObj = new JSONObject(jsonStringTwoWeeks);
             else
                 jsonObj = new JSONObject(jsonStringPatch);
@@ -164,13 +166,13 @@ public class Main {
         jsonObjectPatch = jsonObjectPatch.getJSONObject("series");
         jsonObjectPatch = jsonObjectPatch.getJSONObject("metadata");
         playedPatch = (int) jsonObjectPatch.get("total_played_decks_count");
-        if (playedExpansion < playedTwoWeeks)
+        if ((playedExpansion < playedTwoWeeks) && (playedExpansion!=0))
             if (playedExpansion< playedPatch)
                 jsonObj = new JSONObject(jsonStringExpansion);
             else
                 jsonObj = new JSONObject(jsonStringPatch);
         else
-            if (playedTwoWeeks<playedPatch)
+            if ((playedTwoWeeks<playedPatch) || (playedPatch==0))
                 jsonObj = new JSONObject(jsonStringTwoWeeks);
             else
                 jsonObj = new JSONObject(jsonStringPatch);
