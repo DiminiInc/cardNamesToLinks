@@ -42,7 +42,12 @@ public class Main {
             tempCard.setId((String) jsonObject.get("id"));
             tempCard.setDbfId((Integer) jsonObject.get("dbfId"));
             tempCard.setNameEN((String) jsonObject.get("name"));
+            try {
             tempCard.setRarity((String) jsonObject.get("rarity"));
+            }
+            catch(Exception e) {
+                tempCard.setRarity("UNCOLLECTIBLE");
+            }
             tempCard.setSet((String) jsonObject.get("set"));
             tempCard.setType((String) jsonObject.get("type"));
             if (!(jsonObject.get("type").equals("HERO") && jsonObject.get("set").equals("CORE")) && !jsonObject.get("set").equals("HERO_SKINS")) {
@@ -88,9 +93,21 @@ public class Main {
         }
 
         JSONObject jsonObj;
-        String jsonStringExpansion = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_STANDARD&TimeRange=CURRENT_EXPANSION&RankRange=ALL");
-        String jsonStringTwoWeeks = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_STANDARD&TimeRange=LAST_14_DAYS&RankRange=ALL");
-        String jsonStringPatch = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_STANDARD&TimeRange=CURRENT_PATCH&RankRange=ALL");
+        String jsonStringTwoWeeks = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report_v2/?GameType=RANKED_STANDARD&TimeRange=LAST_14_DAYS&RankRange=BRONZE_THROUGH_GOLD");
+        String jsonStringPatch;
+        String jsonStringExpansion;
+        try {
+            jsonStringPatch = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report_v2/?GameType=RANKED_STANDARD&TimeRange=CURRENT_PATCH&RankRange=BRONZE_THROUGH_GOLD");
+        }
+        catch(Exception e) {
+            jsonStringPatch = jsonStringTwoWeeks;
+        }
+        try {
+            jsonStringExpansion = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report_v2/?GameType=RANKED_STANDARD&TimeRange=LAST_EXPANSION&RankRange=BRONZE_THROUGH_GOLD");
+        }
+        catch(Exception e) {
+            jsonStringExpansion = jsonStringTwoWeeks;
+        }
         JSONObject jsonObjectExpansion = new JSONObject(jsonStringExpansion);
         jsonObjectExpansion = jsonObjectExpansion.getJSONObject("series");
         jsonObjectExpansion = jsonObjectExpansion.getJSONObject("metadata");
@@ -124,9 +141,19 @@ public class Main {
                 cardMap.get((Integer) jsonObject.get("dbf_id")).setCopiesStandard((double) jsonObject.get("count"));
             }
         }
-        jsonStringExpansion = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_WILD&TimeRange=CURRENT_EXPANSION&RankRange=ALL");
-        jsonStringTwoWeeks = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_WILD&TimeRange=LAST_14_DAYS&RankRange=ALL");
-        jsonStringPatch = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_WILD&TimeRange=CURRENT_PATCH&RankRange=ALL");
+        jsonStringTwoWeeks = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report_v2/?GameType=RANKED_WILD&TimeRange=LAST_14_DAYS&RankRange=BRONZE_THROUGH_GOLD");
+        try {
+            jsonStringPatch = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report_v2/?GameType=RANKED_WILD&TimeRange=CURRENT_PATCH&RankRange=BRONZE_THROUGH_GOLD");
+        }
+        catch(Exception e) {
+            jsonStringPatch = jsonStringTwoWeeks;
+        }
+        try {
+            jsonStringExpansion = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report_v2/?GameType=RANKED_WILD&TimeRange=LAST_EXPANSION&RankRange=BRONZE_THROUGH_GOLD");
+        }
+        catch(Exception e) {
+            jsonStringExpansion = jsonStringTwoWeeks;
+        }
         jsonObjectExpansion = new JSONObject(jsonStringExpansion);
         jsonObjectExpansion = jsonObjectExpansion.getJSONObject("series");
         jsonObjectExpansion = jsonObjectExpansion.getJSONObject("metadata");
@@ -160,9 +187,19 @@ public class Main {
                 cardMap.get((Integer) jsonObject.get("dbf_id")).setCopiesWild((double) jsonObject.get("count"));
             }
         }
-        jsonStringExpansion = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=ARENA&TimeRange=CURRENT_EXPANSION&RankRange=ALL");
-        jsonStringTwoWeeks = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=ARENA&TimeRange=LAST_14_DAYS&RankRange=ALL");
-        jsonStringPatch = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=ARENA&TimeRange=CURRENT_PATCH&RankRange=ALL");
+        jsonStringTwoWeeks = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report_v2/?GameType=ARENA&TimeRange=LAST_14_DAYS");
+        try {
+            jsonStringPatch = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report_v2/?GameType=ARENA&TimeRange=CURRENT_PATCH");
+        }
+        catch(Exception e) {
+            jsonStringPatch = jsonStringTwoWeeks;
+        }
+        try {
+            jsonStringExpansion = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report_v2/?GameType=ARENA&TimeRange=LAST_EXPANSION");
+        }
+        catch(Exception e) {
+            jsonStringExpansion = jsonStringTwoWeeks;
+        }
         jsonObjectExpansion = new JSONObject(jsonStringExpansion);
         jsonObjectExpansion = jsonObjectExpansion.getJSONObject("series");
         jsonObjectExpansion = jsonObjectExpansion.getJSONObject("metadata");
@@ -377,7 +414,7 @@ public class Main {
         return new Scanner(inputStream, "UTF-8").useDelimiter("\\Z").next();
     }
 
-    private static String jsonGetRequest(String urlQueryString) {
+    private static String jsonGetRequest(String urlQueryString) throws IOException {
         String json = null;
         System.setProperty("http.agent", "Chrome");
         try {
@@ -392,7 +429,8 @@ public class Main {
             InputStream inStream = connection.getInputStream();
             json = streamToString(inStream); // input stream to string
         } catch (IOException ex) {
-            ex.printStackTrace();
+//            ex.printStackTrace();
+            throw ex;
         }
         return json;
     }
