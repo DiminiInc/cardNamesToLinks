@@ -37,6 +37,8 @@ public class CardData implements Comparable<CardData> {
     private double copiesArena;
     private double ratingArena;
 
+    private int collectionCopies;
+
     public String getId() {
         return id;
     }
@@ -299,6 +301,14 @@ public class CardData implements Comparable<CardData> {
 
     public void setRatingArena(double ratingArena) {
         this.ratingArena = ratingArena;
+    }
+
+    public int getCollectionCopies() {
+        return collectionCopies;
+    }
+
+    public void setCollectionCopies(int collectionCopies) {
+        this.collectionCopies = collectionCopies;
     }
 
     @Override

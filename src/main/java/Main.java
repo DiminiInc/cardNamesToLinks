@@ -78,6 +78,15 @@ public class Main {
             }
         }
 
+        jsonString = jsonGetRequest("https://hsreplay.net/api/v1/collection/?account_lo=47699632&format=json&region=2 ");
+        JSONObject jsonObject_col = new JSONObject(jsonString);
+        jsonObject_col = jsonObject_col.getJSONObject("collection");
+        int collSum;
+        for (HashMap.Entry<Integer, CardData> entry : cardMap.entrySet()) {
+            collSum=(int) jsonObject_col.getJSONArray(Integer.toString(cardMap.get(entry.getKey()).getDbfId())).get(0) + (int) jsonObject_col.getJSONArray(Integer.toString(cardMap.get(entry.getKey()).getDbfId())).get(1);
+            cardMap.get(entry.getKey()).setCollectionCopies(collSum);
+        }
+
         JSONObject jsonObj;
         String jsonStringExpansion = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_STANDARD&TimeRange=CURRENT_EXPANSION&RankRange=ALL");
         String jsonStringTwoWeeks = jsonGetRequest("https://hsreplay.net/analytics/query/card_included_popularity_report/?GameType=RANKED_STANDARD&TimeRange=LAST_14_DAYS&RankRange=ALL");
@@ -201,8 +210,31 @@ public class Main {
 
         HashMap<Integer, CardData> cardMap2 = new HashMap<>();
         cardMap2 = sortByValue(cardMap);
-
+        String colorLol;
         for (HashMap.Entry<Integer, CardData> entry : cardMap2.entrySet()) {
+            colorLol="#00000000";
+//            colorLol="#64be7b";
+//            double copies_calc;
+//            if (entry.getValue().isWild())
+//                copies_calc=entry.getValue().getCopiesWild();
+//            else
+//                copies_calc=entry.getValue().getCopiesStandard() * 0.9 + entry.getValue().getCopiesWild() * 0.1;
+//            if (entry.getValue().getRarity().equals("LEGENDARY")) {
+//                if (entry.getValue().getCollectionCopies() == 0)
+//                    if (copies_calc == 0)
+//                        colorLol = "#fdec84";
+//                    else
+//                        colorLol = "#f8696b";
+//            } else {
+//                if ((entry.getValue().getCollectionCopies() == 0 && copies_calc >= 1.5))
+//                    colorLol = "#f8696b";
+//                if ((entry.getValue().getCollectionCopies() == 1 && copies_calc >= 1.5) || (entry.getValue().getCollectionCopies() == 0 && copies_calc < 1.5))
+//                    colorLol = "#fba977";
+//                if ((entry.getValue().getCollectionCopies() == 1 && copies_calc < 1.5) || (entry.getValue().getCollectionCopies() == 0 && copies_calc == 0))
+//                    colorLol = "#fdec84";
+//                if (entry.getValue().getCollectionCopies() == 1 && copies_calc == 0)
+//                    colorLol = "#b0d681";
+//            }
             if (!entry.getValue().isWild())
 //                outputEN.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
 //                        + entry.getValue().getImageID() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
@@ -229,7 +261,7 @@ public class Main {
                         entry.getValue().getNameEN() + (Arrays.stream(redList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+redList[0]+"\" title=\""+redList[2]+"\" style=\"color: #e80808;\">&#9888;</a>" : "")
                         + (Arrays.stream(yellowList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+yellowList[0]+"\" title=\""+yellowList[2]+"\" style=\"color: #ffd633;\">&#9888;</a>" : "")
                         +"</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
-                ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
+                ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td style=\"background-color: "+colorLol+";\">" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
                         "%.6f" + "</td><td>" + "%.6f" +
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
                         + "</td></tr>\n", (entry.getValue().getCopiesStandard() * 0.9 + entry.getValue().getCopiesWild
@@ -241,7 +273,7 @@ public class Main {
                         entry.getValue().getNameEN() + (Arrays.stream(redList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+redList[0]+"\" title=\""+redList[2]+"\" style=\"color: #e80808;\">&#9888;</a>" : "")
                         + (Arrays.stream(yellowList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+yellowList[0]+"\" title=\""+yellowList[2]+"\" style=\"color: #ffd633;\">&#9888;</a>" : "")
                         + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
-                ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td>" + "%.4f" + "</td><td>" +
+                ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td style=\"background-color: "+colorLol+";\">" + "%.4f" + "</td><td>" +
                         "%.6f" + "</td><td></td><td>" + "%.6f" +
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
                         + "</td></tr>\n", entry.getValue().getCopiesWild(), entry.getValue().getRatingOverall(), entry.getValue()
@@ -251,13 +283,36 @@ public class Main {
         }
         System.out.println("\nEN Complete\n");
         for (HashMap.Entry<Integer, CardData> entry : cardMap2.entrySet()) {
+            colorLol="#00000000";
+//            colorLol="#64be7b";
+//            double copies_calc;
+//            if (entry.getValue().isWild())
+//                copies_calc=entry.getValue().getCopiesWild();
+//            else
+//                copies_calc=entry.getValue().getCopiesStandard() * 0.9 + entry.getValue().getCopiesWild() * 0.1;
+//            if (entry.getValue().getRarity().equals("LEGENDARY")) {
+//                if (entry.getValue().getCollectionCopies() == 0)
+//                    if (copies_calc == 0)
+//                        colorLol = "#fdec84";
+//                    else
+//                        colorLol = "#f8696b";
+//            } else {
+//                if ((entry.getValue().getCollectionCopies() == 0 && copies_calc >= 1.5))
+//                    colorLol = "#f8696b";
+//                if ((entry.getValue().getCollectionCopies() == 1 && copies_calc >= 1.5) || (entry.getValue().getCollectionCopies() == 0 && copies_calc < 1.5))
+//                    colorLol = "#fba977";
+//                if ((entry.getValue().getCollectionCopies() == 1 && copies_calc < 1.5) || (entry.getValue().getCollectionCopies() == 0 && copies_calc == 0))
+//                    colorLol = "#fdec84";
+//                if (entry.getValue().getCollectionCopies() == 1 && copies_calc == 0)
+//                    colorLol = "#b0d681";
+//            }
             if (!entry.getValue().isWild())
                 outputRU.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
                         + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
                         entry.getValue().getNameRU() + (Arrays.stream(redList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+redList[1]+"\" title=\""+redList[3]+"\" style=\"color: #e80808;\">&#9888;</a>" : "")
                         + (Arrays.stream(yellowList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+yellowList[1]+"\" title=\""+yellowList[3]+"\" style=\"color: #ffd633;\">&#9888;</a>" : "")
                         + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
-                ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
+                ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td style=\"background-color: "+colorLol+";\">" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
                         "%.6f" + "</td><td>" + "%.6f" +
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
                         + "</td></tr>\n", (entry.getValue().getCopiesStandard() * 0.9 + entry.getValue().getCopiesWild
@@ -269,7 +324,7 @@ public class Main {
                         entry.getValue().getNameRU() + (Arrays.stream(redList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+redList[1]+"\" title=\""+redList[3]+"\" style=\"color: #e80808;\">&#9888;</a>" : "")
                         + (Arrays.stream(yellowList).anyMatch(entry.getValue().getNameEN()::equals) ? " <a href=\""+yellowList[1]+"\" title=\""+yellowList[3]+"\" style=\"color: #ffd633;\">&#9888;</a>" : "")
                         + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
-                ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td>" + "%.4f" + "</td><td>" +
+                ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td style=\"background-color: "+colorLol+";\">" + "%.4f" + "</td><td>" +
                         "%.6f" + "</td><td></td><td>" + "%.6f" +
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
                         + "</td></tr>\n", entry.getValue().getCopiesWild(), entry.getValue().getRatingOverall(), entry.getValue()
