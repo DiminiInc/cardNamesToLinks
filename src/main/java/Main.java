@@ -23,7 +23,7 @@ public class Main {
         int standardLegendary=0, standardOther=0, wildLegendary=0, wildOther=0, arenaLegendary=0, arenaOther=0;
         String[] monthEN = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
         String[] monthRU = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
-        String[] wildSets = {"HOF", "NAXX", "GVG", "BRM", "TGT", "LOE", "OG", "KARA", "GANGS", "UNGORO", "ICECROWN", "LOOTAPALOOZA"};
+        String[] wildSets = {"HOF", "NAXX", "GVG", "BRM", "TGT", "LOE", "OG", "KARA", "GANGS", "UNGORO", "ICECROWN", "LOOTAPALOOZA", "GILNEAS", "BOOMSDAY", "TROLL"};
         String[] redList = {};
         String [] yellowList = {};
         //String[] redList = {"https://playhearthstone.com/en-us/blog/22990356/", "https://playhearthstone.com/ru-ru/blog/22990356/", "This card was modified recently", "Эта карта была недавно изменена", "EVIL Miscreant", "Raiding Party", "Preparation", "Archivist Elysiana"};
