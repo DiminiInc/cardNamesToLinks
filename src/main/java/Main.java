@@ -26,8 +26,8 @@ public class Main {
         String[] wildSets = {"HOF", "NAXX", "GVG", "BRM", "TGT", "LOE", "OG", "KARA", "GANGS", "UNGORO", "ICECROWN", "LOOTAPALOOZA", "GILNEAS", "BOOMSDAY", "TROLL"};
         String[] redList = {};
         String [] yellowList = {};
-        //String[] redList = {"https://playhearthstone.com/en-us/blog/22990356/", "https://playhearthstone.com/ru-ru/blog/22990356/", "This card was modified recently", "Эта карта была недавно изменена", "EVIL Miscreant", "Raiding Party", "Preparation", "Archivist Elysiana"};
-        //String [] yellowList = {"https://playhearthstone.com/en-us/blog/22990355/", "https://playhearthstone.com/ru-ru/blog/22990355/", "This card will be modified soon", "Эта карта скоро будет изменена","Gloop Sprayer", "Mulchmuncher", "Necromechanic", "Flark's Boom-Zooka", "Unexpected Results", "Luna's Pocket Galaxy", "Crystology", "Glowstone Technician", "Extra Arms", "Cloning Device", "Pogo-Hopper", "Violet Haze", "The Storm Bringer", "Thunderhead", "Spirit Bomb", "Dr. Morrigan", "Security Rover", "Beryllium Nullifier"};
+//        String[] redList = {"https://playhearthstone.com/news/23426180", "https://playhearthstone.com/news/23426180", "This card was modified recently", "Эта карта была недавно изменена", "Aldor Attendant","Torrent","Shattered Rumbler","The Lurker Below","Priestess of Fury","Crimson Sigil Runner","Scavenger's Ingenuity","Shadowjeweler Hanar","Blackjack Stunner", "Imprisoned Scrap Imp", "Bloodboil Brute", "Bloodsworn Mercenary"};
+//        String [] yellowList = {"https://playhearthstone.com/news/23426180", "https://playhearthstone.com/news/23426180", "This card will be modified soon", "Эта карта скоро будет изменена","Aldor Attendant","Torrent","Shattered Rumbler","The Lurker Below","Priestess of Fury","Crimson Sigil Runner","Scavenger's Ingenuity","Shadowjeweler Hanar","Blackjack Stunner", "Imprisoned Scrap Imp", "Bloodboil Brute", "Bloodsworn Mercenary"};
         outputEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone-cards-rating/cards-data.php"));  //clears file every time
         outputRU = new BufferedWriter(new FileWriter("../Site Dev/ru/statistics/games/hearthstone-cards-rating/cards-data.php"));
         //outputArenaEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone-arena-tier-list/cards-data.php"));  //clears file every time
@@ -50,6 +50,7 @@ public class Main {
             }
             tempCard.setSet((String) jsonObject.get("set"));
             tempCard.setType((String) jsonObject.get("type"));
+            tempCard.setCardClass((String) jsonObject.get("cardClass"));
             if (!(jsonObject.get("type").equals("HERO") && jsonObject.get("set").equals("CORE")) && !jsonObject.get("set").equals("HERO_SKINS")) {
                 cardMap.put((Integer) jsonObject.get("dbfId"), tempCard);
                 if (Arrays.stream(wildSets).anyMatch(tempCard.getSet()::equals))
@@ -300,7 +301,7 @@ public class Main {
                         +"</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
                 ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td style=\"background-color: "+colorLol+";\">" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
                         "%.6f" + "</td><td>" + "%.6f" +
-                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
+                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet() + "</td><td>" + entry.getValue().getCardClass()
                         + "</td></tr>\n", (entry.getValue().getCopiesStandard() * 0.9 + entry.getValue().getCopiesWild
                         () * 0.1), entry.getValue().getRatingOverall(), entry.getValue().getRatingStandard(), entry.getValue()
                         .getRatingWild()));
@@ -312,7 +313,7 @@ public class Main {
                         + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
                 ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td style=\"background-color: "+colorLol+";\">" + "%.4f" + "</td><td>" +
                         "%.6f" + "</td><td></td><td>" + "%.6f" +
-                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
+                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet() + "</td><td>" + entry.getValue().getCardClass()
                         + "</td></tr>\n", entry.getValue().getCopiesWild(), entry.getValue().getRatingOverall(), entry.getValue()
                         .getRatingWild()));
 
@@ -351,7 +352,7 @@ public class Main {
                         + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
                 ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td style=\"background-color: "+colorLol+";\">" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
                         "%.6f" + "</td><td>" + "%.6f" +
-                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
+                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet() + "</td><td>" + entry.getValue().getCardClass()
                         + "</td></tr>\n", (entry.getValue().getCopiesStandard() * 0.9 + entry.getValue().getCopiesWild
                         () * 0.1), entry.getValue().getRatingOverall(), entry.getValue().getRatingStandard(), entry.getValue()
                         .getRatingWild()));
@@ -363,7 +364,7 @@ public class Main {
                         + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
                 ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td style=\"background-color: "+colorLol+";\">" + "%.4f" + "</td><td>" +
                         "%.6f" + "</td><td></td><td>" + "%.6f" +
-                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
+                        "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet() + "</td><td>" + entry.getValue().getCardClass()
                         + "</td></tr>\n", entry.getValue().getCopiesWild(), entry.getValue().getRatingOverall(), entry.getValue()
                         .getRatingWild()));
             //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
