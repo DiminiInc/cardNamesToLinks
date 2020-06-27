@@ -19,18 +19,20 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        Writer outputRU, outputEN, outputArenaEN, dateRU, dateEN;
+        Writer outputRU, outputEN, outputArenaEN, outputArenaRU, dateRU, dateEN;
         int standardLegendary=0, standardOther=0, wildLegendary=0, wildOther=0, arenaLegendary=0, arenaOther=0;
         String[] monthEN = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
         String[] monthRU = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
         String[] wildSets = {"HOF", "NAXX", "GVG", "BRM", "TGT", "LOE", "OG", "KARA", "GANGS", "UNGORO", "ICECROWN", "LOOTAPALOOZA", "GILNEAS", "BOOMSDAY", "TROLL"};
+        String[] arenaSets = {"CORE", "EXPERT1", "BLACK_TEMPLE", "DEMON_HUNTER_INITIATE", "YEAR_OF_THE_DRAGON", "DRAGONS", "ULDUM", "DALARAN"};
         String[] redList = {};
         String [] yellowList = {};
 //        String[] redList = {"https://playhearthstone.com/news/23426180", "https://playhearthstone.com/news/23426180", "This card was modified recently", "Эта карта была недавно изменена", "Aldor Attendant","Torrent","Shattered Rumbler","The Lurker Below","Priestess of Fury","Crimson Sigil Runner","Scavenger's Ingenuity","Shadowjeweler Hanar","Blackjack Stunner", "Imprisoned Scrap Imp", "Bloodboil Brute", "Bloodsworn Mercenary"};
 //        String [] yellowList = {"https://playhearthstone.com/news/23426180", "https://playhearthstone.com/news/23426180", "This card will be modified soon", "Эта карта скоро будет изменена","Aldor Attendant","Torrent","Shattered Rumbler","The Lurker Below","Priestess of Fury","Crimson Sigil Runner","Scavenger's Ingenuity","Shadowjeweler Hanar","Blackjack Stunner", "Imprisoned Scrap Imp", "Bloodboil Brute", "Bloodsworn Mercenary"};
-        outputEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone-cards-rating/cards-data.php"));  //clears file every time
-        outputRU = new BufferedWriter(new FileWriter("../Site Dev/ru/statistics/games/hearthstone-cards-rating/cards-data.php"));
-        //outputArenaEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone-arena-tier-list/cards-data.php"));  //clears file every time
+        outputEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone/crafting-guide/cards-data.php"));  //clears file every time
+        outputRU = new BufferedWriter(new FileWriter("../Site Dev/ru/statistics/games/hearthstone/crafting-guide/cards-data.php"));
+        outputArenaEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone/arena-tier-list/cards-data.php"));  //clears file every time
+        outputArenaRU = new BufferedWriter(new FileWriter("../Site Dev/ru/statistics/games/hearthstone/arena-tier-list/cards-data.php"));  //clears file every time
         HashMap<Integer, CardData> cardMap = new HashMap<>();
 
         String jsonString = jsonGetRequest("https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json");
@@ -67,7 +69,11 @@ public class Main {
                         standardOther++;
                         wildOther++;
                     }
-
+                if (Arrays.stream(arenaSets).anyMatch(tempCard.getSet()::equals))
+                    if (tempCard.getRarity().equals("LEGENDARY"))
+                        arenaLegendary++;
+                    else
+                        arenaOther++;
             }
         }
 
@@ -242,7 +248,7 @@ public class Main {
             cardMap.get(entry.getKey()).setRatingWild(entry.getValue().getPopularityWild() * entry.getValue()
                     .getWinrateWild() * 2 * (wildLegendary+wildOther*2) / 300000);
             cardMap.get(entry.getKey()).setRatingArena(entry.getValue().getPopularityArena() * entry.getValue()
-                    .getWinrateArena() * 2 * 2711 / 300000);
+                    .getWinrateArena() * 2 * (arenaLegendary+arenaOther*2) / 300000);
             cardMap.get(entry.getKey()).setRatingOverall(entry.getValue().getRatingStandard() * 0.9 + entry.getValue().getRatingWild() * 0.1);
         }
 
@@ -263,6 +269,8 @@ public class Main {
 //                        colorLol = "#fdec84";
 //                    else
 //                        colorLol = "#f8696b";
+//                    if (entry.getValue().getCollectionCopies() > 1 && !entry.getValue().getSet().equals("CORE"))
+//                        colorLol = "#2e69fd";
 //            } else {
 //                if ((entry.getValue().getCollectionCopies() == 0 && copies_calc >= 1.5))
 //                    colorLol = "#f8696b";
@@ -272,6 +280,8 @@ public class Main {
 //                    colorLol = "#fdec84";
 //                if (entry.getValue().getCollectionCopies() == 1 && copies_calc == 0)
 //                    colorLol = "#b0d681";
+//                if (entry.getValue().getCollectionCopies() > 2 && !entry.getValue().getSet().equals("CORE"))
+//                    colorLol = "#2e69fd";
 //            }
             if (!entry.getValue().isWild())
 //                outputEN.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
@@ -317,33 +327,6 @@ public class Main {
                         + "</td></tr>\n", entry.getValue().getCopiesWild(), entry.getValue().getRatingOverall(), entry.getValue()
                         .getRatingWild()));
 
-            //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-        }
-        System.out.println("\nEN Complete\n");
-        for (HashMap.Entry<Integer, CardData> entry : cardMap2.entrySet()) {
-            colorLol="#00000000";
-//            colorLol="#64be7b";
-//            double copies_calc;
-//            if (entry.getValue().isWild())
-//                copies_calc=entry.getValue().getCopiesWild();
-//            else
-//                copies_calc=entry.getValue().getCopiesStandard() * 0.9 + entry.getValue().getCopiesWild() * 0.1;
-//            if (entry.getValue().getRarity().equals("LEGENDARY")) {
-//                if (entry.getValue().getCollectionCopies() == 0)
-//                    if (copies_calc == 0)
-//                        colorLol = "#fdec84";
-//                    else
-//                        colorLol = "#f8696b";
-//            } else {
-//                if ((entry.getValue().getCollectionCopies() == 0 && copies_calc >= 1.5))
-//                    colorLol = "#f8696b";
-//                if ((entry.getValue().getCollectionCopies() == 1 && copies_calc >= 1.5) || (entry.getValue().getCollectionCopies() == 0 && copies_calc < 1.5))
-//                    colorLol = "#fba977";
-//                if ((entry.getValue().getCollectionCopies() == 1 && copies_calc < 1.5) || (entry.getValue().getCollectionCopies() == 0 && copies_calc == 0))
-//                    colorLol = "#fdec84";
-//                if (entry.getValue().getCollectionCopies() == 1 && copies_calc == 0)
-//                    colorLol = "#b0d681";
-//            }
             if (!entry.getValue().isWild())
                 outputRU.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
                         + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
@@ -367,36 +350,53 @@ public class Main {
                         "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet() + "</td><td>" + entry.getValue().getCardClass()
                         + "</td></tr>\n", entry.getValue().getCopiesWild(), entry.getValue().getRatingOverall(), entry.getValue()
                         .getRatingWild()));
+
             //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
         }
 
-
-        System.out.println("\nRU Complete!\n");
+        System.out.println("\nComplete crafting guide!\n");
 
         for (HashMap.Entry<Integer, CardData> entry : cardMap.entrySet()) {
             cardMap.get(entry.getKey()).setRatingOverall(entry.getValue().getRatingArena());
         }
+        cardMap2 = sortByValue(cardMap);
 
-//        for (HashMap.Entry<Integer, CardData> entry : cardMap2.entrySet()) {
-//            outputArenaEN.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
-//                    + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
-//                    entry.getValue().getNameEN() + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
-//            ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
-//                    "%.6f" + "</td><td>" +
-//                    "</td><td>" + entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet()
-//                    + "</td></tr>\n", entry.getValue().getCopiesArena() * 10, entry.getValue().getRatingOverall(), entry.getValue().getRatingStandard()));
-//
-//        }
+        for (HashMap.Entry<Integer, CardData> entry : cardMap2.entrySet()) {
+            if (Arrays.stream(arenaSets).anyMatch(entry.getValue().getSet()::equals))
+                outputArenaEN.append(String.format("<tr><td class=\"lazyload extended-gradient\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
+                        + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
+                        entry.getValue().getNameEN() + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
+                ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
+                        entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet() + "</td><td>" + entry.getValue().getCardClass()
+                        + "</td></tr>\n", entry.getValue().getCopiesArena(), entry.getValue().getRatingOverall()));
+            if (Arrays.stream(arenaSets).anyMatch(entry.getValue().getSet()::equals))
+                outputArenaRU.append(String.format("<tr><td class=\"lazyload extended-gradient\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
+                        + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/" + entry.getValue().getId() + "\">" +
+                        entry.getValue().getNameRU() + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")
+                ) ? "<div class=\"legendary-star\">★</div>" : "") + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" + "</td><td>" +
+                        entry.getValue().getRarity() + "</td><td>" + entry.getValue().getSet() + "</td><td>" + entry.getValue().getCardClass()
+                        + "</td></tr>\n", entry.getValue().getCopiesArena(), entry.getValue().getRatingOverall()));
 
-        dateEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone-cards-rating/current-date.php"));  //clears file every time
-        dateRU = new BufferedWriter(new FileWriter("../Site Dev/ru/statistics/games/hearthstone-cards-rating/current-date.php"));
+        }
+
+        System.out.println("\nComplete drafting guide!\n");
+
+        dateEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone/crafting-guide/current-date.php"));  //clears file every time
+        dateRU = new BufferedWriter(new FileWriter("../Site Dev/ru/statistics/games/hearthstone/crafting-guide/current-date.php"));
+        dateEN.append(monthEN[LocalDateTime.now().getMonthValue() - 1] + " " + LocalDateTime.now().getDayOfMonth() + ", " + LocalDateTime.now().getYear());
+        dateRU.append(monthRU[LocalDateTime.now().getMonthValue() - 1] + " " + LocalDateTime.now().getDayOfMonth() + ", " + LocalDateTime.now().getYear());
+        dateEN.close();
+        dateRU.close();
+        dateEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone/arena-tier-list/current-date.php"));  //clears file every time
+        dateRU = new BufferedWriter(new FileWriter("../Site Dev/ru/statistics/games/hearthstone/arena-tier-list/current-date.php"));  //clears file every time
         dateEN.append(monthEN[LocalDateTime.now().getMonthValue() - 1] + " " + LocalDateTime.now().getDayOfMonth() + ", " + LocalDateTime.now().getYear());
         dateRU.append(monthRU[LocalDateTime.now().getMonthValue() - 1] + " " + LocalDateTime.now().getDayOfMonth() + ", " + LocalDateTime.now().getYear());
         dateEN.close();
         dateRU.close();
         outputEN.close();
-        //outputArenaEN.close();
+        outputArenaEN.close();
         outputRU.close();
+        outputArenaRU.close();
     }
 
     private static <K, V extends Comparable<? super V>> HashMap<K, V> sortByValue(HashMap<K, V> map) {
