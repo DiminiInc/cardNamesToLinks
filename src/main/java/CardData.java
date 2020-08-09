@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+
 /**
  * Created by Yaskovich Dmitry on 15/12/2017.
  */
@@ -31,12 +32,12 @@ public class CardData implements Comparable<CardData> {
     private double winrateWild;
     private double copiesWild;
     private double ratingWild;
+    private double copiesOverall;
     private double ratingOverall;
     private double popularityArena;
     private double winrateArena;
     private double copiesArena;
     private double ratingArena;
-
     private int collectionCopies;
 
     public String getId() {
@@ -263,6 +264,14 @@ public class CardData implements Comparable<CardData> {
         this.ratingWild = ratingWild;
     }
 
+    public double getCopiesOverall() {
+        return copiesOverall;
+    }
+
+    public void setCopiesOverall(double copiesOverall) {
+        this.copiesOverall = copiesOverall;
+    }
+
     public double getRatingOverall() {
         return ratingOverall;
     }
@@ -332,6 +341,7 @@ public class CardData implements Comparable<CardData> {
                 ", winrateWild=" + winrateWild +
                 ", copiesWild=" + copiesWild +
                 ", ratingWild=" + ratingWild +
+                ", copiesOverall=" + copiesOverall +
                 ", ratingOverall=" + ratingOverall +
                 ", popularityArena=" + popularityArena +
                 ", winrateArena=" + winrateArena +
