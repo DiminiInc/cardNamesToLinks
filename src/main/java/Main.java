@@ -61,6 +61,9 @@ public class Main {
             tempCard.setId((String) jsonObject.get("id"));
             tempCard.setDbfId((Integer) jsonObject.get("dbfId"));
             tempCard.setNameEN((String) jsonObject.get("name"));
+            if (jsonObject.has("classes")) {
+                tempCard.setClasses(jsonObject.getJSONArray("classes"));
+            }
             try {
                 tempCard.setRarity((String) jsonObject.get("rarity"));
             } catch (Exception e) {
@@ -322,6 +325,7 @@ public class Main {
         cardMap2 = sortByValue(cardMap);
         String cardCopiesColorState;
         String cardCopiesState;
+        StringBuilder cardClassesText;
         for (HashMap.Entry<Integer, CardData> entry : cardMap2.entrySet()) {
             cardCopiesColorState = "#00000000";
             cardCopiesState = "OK";
@@ -367,6 +371,16 @@ public class Main {
 //                    cardCopiesState = "EXTRA";
 //                }
 //            }
+            cardClassesText = new StringBuilder();
+            if (entry.getValue().getClasses() != null) {
+                for (int i = 0; i < entry.getValue().getClasses().length(); i++) {
+                    cardClassesText.append("class:").append(entry.getValue().getClasses().optString(i)).append(", ");
+                }
+                cardClassesText.setLength(cardClassesText.length() - 2);
+            } else {
+                cardClassesText.append("class:").append(entry.getValue().getCardClass());
+            }
+            
             if (!entry.getValue().isWild())
                 outputEN.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
                                 + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/"
@@ -380,7 +394,7 @@ public class Main {
                                 + "</td><td>" + "%.6f" + "</td><td>" + "%.6f" + "</td><td>" + "%.6f" +
                                 "</td><td>rarity:" + entry.getValue().getRarity()
                                 + "</td><td>set:" + entry.getValue().getSet()
-                                + "</td><td>class:" + entry.getValue().getCardClass()
+                                + "</td><td>" + cardClassesText
                                 + "</td><td>collection:" + cardCopiesState + "</td></tr>\n",
                         entry.getValue().getCopiesOverall(), entry.getValue().getRatingOverall(),
                         entry.getValue().getRatingStandard(), entry.getValue().getRatingWild()));
@@ -397,7 +411,7 @@ public class Main {
                                 + "%.6f" + "</td><td></td><td>" + "%.6f" +
                                 "</td><td>rarity:" + entry.getValue().getRarity()
                                 + "</td><td>set:" + entry.getValue().getSet()
-                                + "</td><td>class:" + entry.getValue().getCardClass()
+                                + "</td><td>" + cardClassesText
                                 + "</td><td>collection:" + cardCopiesState + "</td></tr>\n",
                         entry.getValue().getCopiesWild(), entry.getValue().getRatingOverall(),
                         entry.getValue().getRatingWild()));
@@ -415,7 +429,7 @@ public class Main {
                                 + "%.6f" + "</td><td>" + "%.6f" + "</td><td>" + "%.6f" +
                                 "</td><td>rarity:" + entry.getValue().getRarity()
                                 + "</td><td>set:" + entry.getValue().getSet()
-                                + "</td><td>class:" + entry.getValue().getCardClass()
+                                + "</td><td>" + cardClassesText
                                 + "</td><td>collection:" + cardCopiesState + "</td></tr>\n",
                         entry.getValue().getCopiesOverall(), entry.getValue().getRatingOverall(),
                         entry.getValue().getRatingStandard(), entry.getValue().getRatingWild()));
@@ -432,7 +446,7 @@ public class Main {
                                 "%.6f" + "</td><td></td><td>" + "%.6f" +
                                 "</td><td>rarity:" + entry.getValue().getRarity()
                                 + "</td><td>set:" + entry.getValue().getSet()
-                                + "</td><td>class:" + entry.getValue().getCardClass()
+                                + "</td><td>" + cardClassesText
                                 + "</td><td>collection:" + cardCopiesState + "</td></tr>\n",
                         entry.getValue().getCopiesWild(), entry.getValue().getRatingOverall(),
                         entry.getValue().getRatingWild()));
@@ -447,6 +461,16 @@ public class Main {
         cardMap2 = sortByValue(cardMap);
 
         for (HashMap.Entry<Integer, CardData> entry : cardMap2.entrySet()) {
+            cardClassesText = new StringBuilder();
+            if (entry.getValue().getClasses() != null) {
+                for (int i = 0; i < entry.getValue().getClasses().length(); i++) {
+                    cardClassesText.append("class:" + entry.getValue().getClasses().optString(i) + ", ");
+                }
+                cardClassesText.setLength(cardClassesText.length() - 2);
+            } else {
+                cardClassesText.append("class:").append(entry.getValue().getCardClass());
+            }
+
             if (Arrays.asList(arenaSets).contains(entry.getValue().getSet()))
                 outputArenaEN.append(String.format("<tr><td class=\"lazyload extended-gradient\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
                                 + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/"
@@ -455,7 +479,7 @@ public class Main {
                                 + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" +
                                 "</td><td>rarity:" + entry.getValue().getRarity()
                                 + "</td><td>set:" + entry.getValue().getSet()
-                                + "</td><td>class:" + entry.getValue().getCardClass()
+                                + "</td><td>" + cardClassesText
                                 + "</td></tr>\n",
                         entry.getValue().getCopiesArena(), entry.getValue().getRatingOverall()));
             if (Arrays.asList(arenaSets).contains(entry.getValue().getSet()))
@@ -466,7 +490,7 @@ public class Main {
                                 + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" +
                                 "</td><td>rarity:" + entry.getValue().getRarity()
                                 + "</td><td>set:" + entry.getValue().getSet()
-                                + "</td><td>class:" + entry.getValue().getCardClass()
+                                + "</td><td>" + cardClassesText
                                 + "</td></tr>\n",
                         entry.getValue().getCopiesArena(), entry.getValue().getRatingOverall()));
         }

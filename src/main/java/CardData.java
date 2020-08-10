@@ -1,3 +1,5 @@
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 
 /**
@@ -13,6 +15,7 @@ public class CardData implements Comparable<CardData> {
     private String artist;
     private Integer attack;
     private String cardClass;
+    private JSONArray classes;
     private boolean collectible;
     private Integer cost;
     private Integer elite;
@@ -110,6 +113,14 @@ public class CardData implements Comparable<CardData> {
 
     public void setCardClass(String cardClass) {
         this.cardClass = cardClass;
+    }
+
+    public JSONArray getClasses() {
+        return classes;
+    }
+
+    public void setClasses(JSONArray classes) {
+        this.classes = classes;
     }
 
     public boolean isCollectible() {
