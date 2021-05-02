@@ -113,7 +113,8 @@ public class Main {
         for (HashMap.Entry<Integer, CardData> entry : cardMap.entrySet()) {
             if (jsonObject_col.has(Integer.toString(cardMap.get(entry.getKey()).getDbfId()))) {
                 collSum = (int) jsonObject_col.getJSONArray(Integer.toString(cardMap.get(entry.getKey()).getDbfId())).get(0) +
-                        (int) jsonObject_col.getJSONArray(Integer.toString(cardMap.get(entry.getKey()).getDbfId())).get(1);
+                        (int) jsonObject_col.getJSONArray(Integer.toString(cardMap.get(entry.getKey()).getDbfId())).get(1) +
+                        (int) jsonObject_col.getJSONArray(Integer.toString(cardMap.get(entry.getKey()).getDbfId())).get(2);
                 cardMap.get(entry.getKey()).setCollectionCopies(collSum);
             }
         }
