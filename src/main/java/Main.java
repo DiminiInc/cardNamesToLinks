@@ -29,7 +29,7 @@ public class Main {
         String[] monthEN = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
         String[] monthRU = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
         String[] wildSets = {"HOF", "NAXX", "GVG", "BRM", "TGT", "LOE", "OG", "KARA", "GANGS", "UNGORO", "ICECROWN", "LOOTAPALOOZA", "GILNEAS", "BOOMSDAY", "TROLL"};
-        String[] arenaSets = {"CORE", "EXPERT1", "SCHOLOMANCE", "BLACK_TEMPLE", "DEMON_HUNTER_INITIATE", "YEAR_OF_THE_DRAGON", "DRAGONS", "ULDUM", "DALARAN"};
+        String[] arenaSets = {"CORE", "BOOMSDAY", "SCHOLOMANCE", "LOE", "LOOTAPALOOZA", "ULDUM", "ALTERAC_VALLEY"};
         String[] recentChangesList = {};
         String[] incomingChangesList = {};
         String[] hallOfFameList = {};
@@ -69,7 +69,7 @@ public class Main {
             } catch (Exception e) {
                 tempCard.setRarity("UNCOLLECTIBLE");
             }
-            tempCard.setSet((String) jsonObject.get("set"));
+            tempCard.setSet(jsonObject.get("set").toString());
             tempCard.setType((String) jsonObject.get("type"));
             tempCard.setCardClass((String) jsonObject.get("cardClass"));
             if (!(jsonObject.get("type").equals("HERO") && jsonObject.get("set").equals("CORE")) && !jsonObject.get("set").equals("HERO_SKINS")) {
