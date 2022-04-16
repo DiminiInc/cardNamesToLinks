@@ -28,8 +28,15 @@ public class Main {
                 arenaLegendary = 0, arenaOther = 0;
         String[] monthEN = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
         String[] monthRU = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
-        String[] wildSets = {"HOF", "NAXX", "GVG", "BRM", "TGT", "LOE", "OG", "KARA", "GANGS", "UNGORO", "ICECROWN", "LOOTAPALOOZA", "GILNEAS", "BOOMSDAY", "TROLL"};
-        String[] arenaSets = {"CORE", "BOOMSDAY", "SCHOLOMANCE", "LOE", "LOOTAPALOOZA", "ULDUM", "ALTERAC_VALLEY"};
+        String[] wildSets = {"EXPERT1", "LEGACY", "NAXX", "GVG",
+                "BRM", "TGT", "LOE",
+                "OG", "KARA", "GANGS",
+                "UNGORO", "ICECROWN", "LOOTAPALOOZA",
+                "GILNEAS", "BOOMSDAY", "TROLL",
+                "DALARAN", "ULDUM", "DRAGONS", "EAR_OF_THE_DRAGON",
+                "DEMON_HUNTER_INITIATE", "BLACK_TEMPLE", "SCHOLOMANCE", "DARKMOON_FAIRE", "DARKMOON_FAIRE_MINI_SET"
+        };
+        String[] arenaSets = {"CORE", "BRM", "TGT", "LOE", "OG", "KARA", "GANGS", "UNGORO", "DRAGONS", "STORMWIND", "STORMWIND_MINI_SET", "ALTERAC_VALLEY", "ALTERAC_VALLEY_MINI_SET", "THE_SUNKEN_CITY"};
         String[] recentChangesList = {};
         String[] incomingChangesList = {};
         String[] hallOfFameList = {};
