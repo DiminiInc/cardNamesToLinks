@@ -33,7 +33,7 @@ public class Main {
                 "OG", "KARA", "GANGS",
                 "UNGORO", "ICECROWN", "LOOTAPALOOZA",
                 "GILNEAS", "BOOMSDAY", "TROLL",
-                "DALARAN", "ULDUM", "DRAGONS", "EAR_OF_THE_DRAGON",
+                "DALARAN", "ULDUM", "DRAGONS", "YEAR_OF_THE_DRAGON",
                 "DEMON_HUNTER_INITIATE", "BLACK_TEMPLE", "SCHOLOMANCE", "DARKMOON_FAIRE", "DARKMOON_FAIRE_MINI_SET"
         };
         String[] arenaSets = {"CORE", "BRM", "TGT", "LOE", "OG", "KARA", "GANGS", "UNGORO", "DRAGONS", "STORMWIND", "STORMWIND_MINI_SET", "ALTERAC_VALLEY", "ALTERAC_VALLEY_MINI_SET", "THE_SUNKEN_CITY"};
