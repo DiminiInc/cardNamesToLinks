@@ -36,7 +36,16 @@ public class Main {
                 "DALARAN", "ULDUM", "DRAGONS", "YEAR_OF_THE_DRAGON",
                 "DEMON_HUNTER_INITIATE", "BLACK_TEMPLE", "SCHOLOMANCE", "DARKMOON_FAIRE", "DARKMOON_FAIRE_MINI_SET"
         };
-        String[] arenaSets = {"CORE", "BRM", "TGT", "LOE", "OG", "KARA", "GANGS", "UNGORO", "DRAGONS", "STORMWIND", "STORMWIND_MINI_SET", "ALTERAC_VALLEY", "ALTERAC_VALLEY_MINI_SET", "THE_SUNKEN_CITY"};
+//        String[] arenaSets = {"CORE", "EXPERT1", "HOF", "NAXX", "GVG",
+//                "BRM", "TGT", "LOE",
+//                "OG", "KARA", "GANGS",
+//                "UNGORO", "ICECROWN", "LOOTAPALOOZA",
+//                "GILNEAS", "BOOMSDAY", "TROLL",
+//                "DALARAN", "ULDUM", "DRAGONS", "YEAR_OF_THE_DRAGON",
+//                "DEMON_HUNTER_INITIATE", "BLACK_TEMPLE", "SCHOLOMANCE", "DARKMOON_FAIRE", "DARKMOON_FAIRE_MINI_SET",
+//                "THE_BARRENS", "THE_BARRENS_MINI_SET", "STORMWIND", "STORMWIND_MINI_SET", "ALTERAC_VALLEY", "ALTERAC_VALLEY_MINI_SET",
+//                "THE_SUNKEN_CITY", "THE_SUNKEN_CITY_MINI_SET", "REVENDRETH"
+//        };
         String[] recentChangesList = {};
         String[] incomingChangesList = {};
         String[] hallOfFameList = {};
@@ -93,11 +102,11 @@ public class Main {
                     standardOther++;
                     wildOther++;
                 }
-                if (Arrays.asList(arenaSets).contains(tempCard.getSet()))
-                    if (tempCard.getRarity().equals("LEGENDARY"))
-                        arenaLegendary++;
-                    else
-                        arenaOther++;
+//                if (Arrays.asList(arenaSets).contains(tempCard.getSet()))
+                if (tempCard.getRarity().equals("LEGENDARY"))
+                    arenaLegendary++;
+                else
+                    arenaOther++;
             }
         }
 
@@ -479,28 +488,28 @@ public class Main {
                 cardClassesText.append("class:").append(entry.getValue().getCardClass());
             }
 
-            if (Arrays.asList(arenaSets).contains(entry.getValue().getSet()))
-                outputArenaEN.append(String.format("<tr><td class=\"lazyload extended-gradient\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
-                                + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/"
-                                + entry.getValue().getId() + "\">" + entry.getValue().getNameEN() + "</a>"
-                                + ((entry.getValue().getRarity().equals("LEGENDARY")) ? "<div class=\"legendary-star\">★</div>" : "")
-                                + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" +
-                                "</td><td>rarity:" + entry.getValue().getRarity()
-                                + "</td><td>set:" + entry.getValue().getSet()
-                                + "</td><td>" + cardClassesText
-                                + "</td></tr>\n",
-                        entry.getValue().getCopiesArena(), entry.getValue().getRatingOverall()));
-            if (Arrays.asList(arenaSets).contains(entry.getValue().getSet()))
-                outputArenaRU.append(String.format("<tr><td class=\"lazyload extended-gradient\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
-                                + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/"
-                                + entry.getValue().getId() + "\">" + entry.getValue().getNameRU() + "</a>"
-                                + ((entry.getValue().getRarity().equals("LEGENDARY")) ? "<div class=\"legendary-star\">★</div>" : "")
-                                + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" +
-                                "</td><td>rarity:" + entry.getValue().getRarity()
-                                + "</td><td>set:" + entry.getValue().getSet()
-                                + "</td><td>" + cardClassesText
-                                + "</td></tr>\n",
-                        entry.getValue().getCopiesArena(), entry.getValue().getRatingOverall()));
+//            if (Arrays.asList(arenaSets).contains(entry.getValue().getSet()))
+            outputArenaEN.append(String.format("<tr><td class=\"lazyload extended-gradient\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
+                            + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/"
+                            + entry.getValue().getId() + "\">" + entry.getValue().getNameEN() + "</a>"
+                            + ((entry.getValue().getRarity().equals("LEGENDARY")) ? "<div class=\"legendary-star\">★</div>" : "")
+                            + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" +
+                            "</td><td>rarity:" + entry.getValue().getRarity()
+                            + "</td><td>set:" + entry.getValue().getSet()
+                            + "</td><td>" + cardClassesText
+                            + "</td></tr>\n",
+                    entry.getValue().getCopiesArena(), entry.getValue().getRatingOverall()));
+//            if (Arrays.asList(arenaSets).contains(entry.getValue().getSet()))
+            outputArenaRU.append(String.format("<tr><td class=\"lazyload extended-gradient\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
+                            + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/"
+                            + entry.getValue().getId() + "\">" + entry.getValue().getNameRU() + "</a>"
+                            + ((entry.getValue().getRarity().equals("LEGENDARY")) ? "<div class=\"legendary-star\">★</div>" : "")
+                            + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" +
+                            "</td><td>rarity:" + entry.getValue().getRarity()
+                            + "</td><td>set:" + entry.getValue().getSet()
+                            + "</td><td>" + cardClassesText
+                            + "</td></tr>\n",
+                    entry.getValue().getCopiesArena(), entry.getValue().getRatingOverall()));
         }
 
         System.out.println("\nComplete drafting guide!\n");
