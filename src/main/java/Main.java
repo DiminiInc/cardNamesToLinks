@@ -85,10 +85,14 @@ public class Main {
             } catch (Exception e) {
                 tempCard.setRarity("UNCOLLECTIBLE");
             }
-            tempCard.setSet(jsonObject.get("set").toString());
+            if (jsonObject.has("set")) {
+                tempCard.setSet(jsonObject.get("set").toString());
+            }
             tempCard.setType((String) jsonObject.get("type"));
             tempCard.setCardClass((String) jsonObject.get("cardClass"));
-            if (!(jsonObject.get("type").equals("HERO") && jsonObject.get("set").equals("CORE")) && !jsonObject.get("set").equals("HERO_SKINS")) {
+            if (jsonObject.has("set") &&
+                    !(jsonObject.get("type").equals("HERO") && jsonObject.get("set").equals("CORE")) &&
+                    !jsonObject.get("set").equals("HERO_SKINS")) {
                 cardMap.put((Integer) jsonObject.get("dbfId"), tempCard);
                 if (Arrays.asList(wildSets).contains(tempCard.getSet()))
                     if (tempCard.getRarity().equals("LEGENDARY"))
@@ -115,7 +119,9 @@ public class Main {
         json = new JSONArray(jsonString);
         for (int i = 0; i < json.length(); i++) {
             JSONObject jsonObject = json.getJSONObject(i);
-            if (!(jsonObject.get("type").equals("HERO") && jsonObject.get("set").equals("CORE")) && !jsonObject.get("set").equals("HERO_SKINS")) {
+            if (jsonObject.has("set") &&
+                    !(jsonObject.get("type").equals("HERO") && jsonObject.get("set").equals("CORE")) &&
+                    !jsonObject.get("set").equals("HERO_SKINS")) {
                 cardMap.get((Integer) jsonObject.get("dbfId")).setNameRU((String) jsonObject.get("name"));
                 cardMap.get((Integer) jsonObject.get("dbfId")).setWild(Arrays.asList(wildSets).contains(cardMap.get((Integer) jsonObject.get("dbfId")).getSet()));
             }
