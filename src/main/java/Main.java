@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -202,9 +203,9 @@ public class Main {
         for (int i = 0; i < json.length(); i++) {
             JSONObject jsonObject = json.getJSONObject(i);
             if (cardMap.containsKey((Integer) jsonObject.get("dbf_id"))) {
-                cardMap.get((Integer) jsonObject.get("dbf_id")).setPopularityStandard((double) jsonObject.get("included_popularity"));
-                cardMap.get((Integer) jsonObject.get("dbf_id")).setWinrateStandard((double) jsonObject.get("included_winrate"));
-                cardMap.get((Integer) jsonObject.get("dbf_id")).setCopiesStandard((double) jsonObject.get("included_count"));
+                cardMap.get((Integer) jsonObject.get("dbf_id")).setPopularityStandard(((BigDecimal) jsonObject.get("included_popularity")).doubleValue());
+                cardMap.get((Integer) jsonObject.get("dbf_id")).setWinrateStandard(((BigDecimal) jsonObject.get("included_winrate")).doubleValue());
+                cardMap.get((Integer) jsonObject.get("dbf_id")).setCopiesStandard(((BigDecimal) jsonObject.get("included_count")).doubleValue());
             }
         }
 
@@ -265,9 +266,9 @@ public class Main {
         for (int i = 0; i < json.length(); i++) {
             JSONObject jsonObject = json.getJSONObject(i);
             if (cardMap.containsKey((Integer) jsonObject.get("dbf_id"))) {
-                cardMap.get((Integer) jsonObject.get("dbf_id")).setPopularityWild((double) jsonObject.get("included_popularity"));
-                cardMap.get((Integer) jsonObject.get("dbf_id")).setWinrateWild((double) jsonObject.get("included_winrate"));
-                cardMap.get((Integer) jsonObject.get("dbf_id")).setCopiesWild((double) jsonObject.get("included_count"));
+                cardMap.get((Integer) jsonObject.get("dbf_id")).setPopularityWild(((BigDecimal) jsonObject.get("included_popularity")).doubleValue());
+                cardMap.get((Integer) jsonObject.get("dbf_id")).setWinrateWild(((BigDecimal) jsonObject.get("included_winrate")).doubleValue());
+                cardMap.get((Integer) jsonObject.get("dbf_id")).setCopiesWild(((BigDecimal) jsonObject.get("included_count")).doubleValue());
             }
         }
 
@@ -321,9 +322,9 @@ public class Main {
         for (int i = 0; i < json.length(); i++) {
             JSONObject jsonObject = json.getJSONObject(i);
             if (cardMap.containsKey((Integer) jsonObject.get("dbf_id"))) {
-                cardMap.get((Integer) jsonObject.get("dbf_id")).setPopularityArena((double) jsonObject.get("included_popularity"));
-                cardMap.get((Integer) jsonObject.get("dbf_id")).setWinrateArena((double) jsonObject.get("included_winrate"));
-                cardMap.get((Integer) jsonObject.get("dbf_id")).setCopiesArena((double) jsonObject.get("included_count"));
+                cardMap.get((Integer) jsonObject.get("dbf_id")).setPopularityArena(((BigDecimal) jsonObject.get("included_popularity")).doubleValue());
+                cardMap.get((Integer) jsonObject.get("dbf_id")).setWinrateArena(((BigDecimal) jsonObject.get("included_winrate")).doubleValue());
+                cardMap.get((Integer) jsonObject.get("dbf_id")).setCopiesArena(((BigDecimal) jsonObject.get("included_count")).doubleValue());
             }
         }
 
