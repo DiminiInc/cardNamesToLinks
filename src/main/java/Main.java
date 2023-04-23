@@ -35,7 +35,8 @@ public class Main {
                 "UNGORO", "ICECROWN", "LOOTAPALOOZA",
                 "GILNEAS", "BOOMSDAY", "TROLL",
                 "DALARAN", "ULDUM", "DRAGONS", "YEAR_OF_THE_DRAGON",
-                "DEMON_HUNTER_INITIATE", "BLACK_TEMPLE", "SCHOLOMANCE", "DARKMOON_FAIRE", "DARKMOON_FAIRE_MINI_SET"
+                "DEMON_HUNTER_INITIATE", "BLACK_TEMPLE", "SCHOLOMANCE", "DARKMOON_FAIRE", "DARKMOON_FAIRE_MINI_SET",
+                "THE_BARRENS", "THE_BARRENS_MINI_SET", "STORMWIND", "STORMWIND_MINI_SET", "ALTERAC_VALLEY", "ALTERAC_VALLEY_MINI_SET"
         };
 //        String[] arenaSets = {"CORE", "EXPERT1", "HOF", "NAXX", "GVG",
 //                "BRM", "TGT", "LOE",
