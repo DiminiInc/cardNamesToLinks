@@ -24,7 +24,8 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        Writer outputRU, outputEN, outputArenaEN, outputArenaRU, dateRU, dateEN;
+        Writer outputGlobal, dateRU, dateEN;
+        JSONArray jsonOutput;
         int standardLegendary = 0, standardOther = 0, wildLegendary = 0, wildOther = 0,
                 arenaLegendary = 0, arenaOther = 0;
         String[] monthEN = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -64,10 +65,8 @@ public class Main {
 //        String[] setRotationList = {"https://playhearthstone.com/news/23426180", "https://playhearthstone.com/news/23426180",
 //                "This card will be rotated out of Standard soon", "Эта карта скоро будет доступна только в Вольном режиме",
 //                "GILNEAS", "BOOMSDAY", "TROLL"};
-        outputEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone/crafting-guide/cards-data.php"));
-        outputRU = new BufferedWriter(new FileWriter("../Site Dev/ru/statistics/games/hearthstone/crafting-guide/cards-data.php"));
-        outputArenaEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone/arena-tier-list/cards-data.php"));
-        outputArenaRU = new BufferedWriter(new FileWriter("../Site Dev/ru/statistics/games/hearthstone/arena-tier-list/cards-data.php"));
+        outputGlobal = new BufferedWriter(new FileWriter("../Site Dev/global/hearthstone-cards-data/cards-data.json"));
+        jsonOutput = new JSONArray();
         HashMap<Integer, CardData> cardMap = new HashMap<>();
 
         /* Get cards data */
@@ -343,6 +342,10 @@ public class Main {
             cardMap.get(entry.getKey()).setCopiesOverall(
                     entry.getValue().getCopiesStandard() * playedStandard / (playedStandard + playedWild)
                             + entry.getValue().getCopiesWild() * playedWild / (playedStandard + playedWild));
+            if (entry.getValue().isWild()) {
+                cardMap.get(entry.getKey()).setRatingStandard(-1);
+                cardMap.get(entry.getKey()).setCopiesOverall(entry.getValue().getCopiesWild());
+            }
         }
 
         /* Generate HTML for the crafting guide */
@@ -405,122 +408,17 @@ public class Main {
             } else {
                 cardClassesText.append("class:").append(entry.getValue().getCardClass());
             }
-            
-            if (!entry.getValue().isWild())
-                outputEN.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
-                                + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/"
-                                + entry.getValue().getId() + "\">" + entry.getValue().getNameEN()
-                                + (Arrays.asList(recentChangesList).contains(entry.getValue().getNameEN()) ? " <a href=\"" + recentChangesList[0] + "\" title=\"" + recentChangesList[2] + "\" style=\"color: #e80808;\">&#9888;</a>" : "")
-                                + (Arrays.asList(incomingChangesList).contains(entry.getValue().getNameEN()) ? " <a href=\"" + incomingChangesList[0] + "\" title=\"" + incomingChangesList[2] + "\" style=\"color: #ffd633;\">&#9888;</a>" : "")
-                                + (Arrays.asList(hallOfFameList).contains(entry.getValue().getNameEN()) ? " <a href=\"" + hallOfFameList[0] + "\" title=\"" + hallOfFameList[2] + "\" style=\"color: #ffd633;\">&#9888;</a>" : "")
-                                + (Arrays.asList(setRotationList).contains(entry.getValue().getSet()) ? " <a href=\"" + setRotationList[0] + "\" title=\"" + setRotationList[2] + "\" style=\"color: #ffd633;\">&#9888;</a>" : "")
-                                + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")) ? "<div class=\"legendary-star\">★</div>" : "")
-                                + "</td><td style=\"background-color: " + cardCopiesColorState + ";\">" + "%.4f"
-                                + "</td><td>" + "%.6f" + "</td><td>" + "%.6f" + "</td><td>" + "%.6f" +
-                                "</td><td>rarity:" + entry.getValue().getRarity()
-                                + "</td><td>set:" + entry.getValue().getSet()
-                                + "</td><td>" + cardClassesText
-                                + "</td><td>collection:" + cardCopiesState + "</td></tr>\n",
-                        entry.getValue().getCopiesOverall(), entry.getValue().getRatingOverall(),
-                        entry.getValue().getRatingStandard(), entry.getValue().getRatingWild()));
-            else
-                outputEN.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
-                                + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/"
-                                + entry.getValue().getId() + "\">" + entry.getValue().getNameEN()
-                                + (Arrays.asList(recentChangesList).contains(entry.getValue().getNameEN()) ? " <a href=\"" + recentChangesList[0] + "\" title=\"" + recentChangesList[2] + "\" style=\"color: #e80808;\">&#9888;</a>" : "")
-                                + (Arrays.asList(incomingChangesList).contains(entry.getValue().getNameEN()) ? " <a href=\"" + incomingChangesList[0] + "\" title=\"" + incomingChangesList[2] + "\" style=\"color: #ffd633;\">&#9888;</a>" : "")
-                                + (Arrays.asList(hallOfFameList).contains(entry.getValue().getNameEN()) ? " <a href=\"" + hallOfFameList[0] + "\" title=\"" + hallOfFameList[2] + "\" style=\"color: #ffd633;\">&#9888;</a>" : "")
-                                + (Arrays.asList(setRotationList).contains(entry.getValue().getSet()) ? " <a href=\"" + setRotationList[0] + "\" title=\"" + setRotationList[2] + "\" style=\"color: #ffd633;\">&#9888;</a>" : "")
-                                + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")) ? "<div class=\"legendary-star\">★</div>" : "")
-                                + "</td><td style=\"background-color: " + cardCopiesColorState + ";\">" + "%.4f" + "</td><td>"
-                                + "%.6f" + "</td><td></td><td>" + "%.6f" +
-                                "</td><td>rarity:" + entry.getValue().getRarity()
-                                + "</td><td>set:" + entry.getValue().getSet()
-                                + "</td><td>" + cardClassesText
-                                + "</td><td>collection:" + cardCopiesState + "</td></tr>\n",
-                        entry.getValue().getCopiesWild(), entry.getValue().getRatingOverall(),
-                        entry.getValue().getRatingWild()));
 
-            if (!entry.getValue().isWild())
-                outputRU.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
-                                + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/"
-                                + entry.getValue().getId() + "\">" + entry.getValue().getNameRU()
-                                + (Arrays.asList(recentChangesList).contains(entry.getValue().getNameEN()) ? " <a href=\"" + recentChangesList[1] + "\" title=\"" + recentChangesList[3] + "\" style=\"color: #e80808;\">&#9888;</a>" : "")
-                                + (Arrays.asList(incomingChangesList).contains(entry.getValue().getNameEN()) ? " <a href=\"" + incomingChangesList[1] + "\" title=\"" + incomingChangesList[3] + "\" style=\"color: #ffd633;\">&#9888;</a>" : "")
-                                + (Arrays.asList(hallOfFameList).contains(entry.getValue().getNameEN()) ? " <a href=\"" + hallOfFameList[0] + "\" title=\"" + hallOfFameList[2] + "\" style=\"color: #ffd633;\">&#9888;</a>" : "")
-                                + (Arrays.asList(setRotationList).contains(entry.getValue().getSet()) ? " <a href=\"" + setRotationList[0] + "\" title=\"" + setRotationList[2] + "\" style=\"color: #ffd633;\">&#9888;</a>" : "")
-                                + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")) ? "<div class=\"legendary-star\">★</div>" : "")
-                                + "</td><td style=\"background-color: " + cardCopiesColorState + ";\">" + "%.4f" + "</td><td>"
-                                + "%.6f" + "</td><td>" + "%.6f" + "</td><td>" + "%.6f" +
-                                "</td><td>rarity:" + entry.getValue().getRarity()
-                                + "</td><td>set:" + entry.getValue().getSet()
-                                + "</td><td>" + cardClassesText
-                                + "</td><td>collection:" + cardCopiesState + "</td></tr>\n",
-                        entry.getValue().getCopiesOverall(), entry.getValue().getRatingOverall(),
-                        entry.getValue().getRatingStandard(), entry.getValue().getRatingWild()));
-            else
-                outputRU.append(String.format("<tr><td class=\"lazyload\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
-                                + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/"
-                                + entry.getValue().getId() + "\">" + entry.getValue().getNameRU()
-                                + (Arrays.asList(recentChangesList).contains(entry.getValue().getNameEN()) ? " <a href=\"" + recentChangesList[1] + "\" title=\"" + recentChangesList[3] + "\" style=\"color: #e80808;\">&#9888;</a>" : "")
-                                + (Arrays.asList(incomingChangesList).contains(entry.getValue().getNameEN()) ? " <a href=\"" + incomingChangesList[1] + "\" title=\"" + incomingChangesList[3] + "\" style=\"color: #ffd633;\">&#9888;</a>" : "")
-                                + (Arrays.asList(hallOfFameList).contains(entry.getValue().getNameEN()) ? " <a href=\"" + hallOfFameList[0] + "\" title=\"" + hallOfFameList[2] + "\" style=\"color: #ffd633;\">&#9888;</a>" : "")
-                                + (Arrays.asList(setRotationList).contains(entry.getValue().getSet()) ? " <a href=\"" + setRotationList[0] + "\" title=\"" + setRotationList[2] + "\" style=\"color: #ffd633;\">&#9888;</a>" : "")
-                                + "</a>" + ((entry.getValue().getRarity().equals("LEGENDARY")) ? "<div class=\"legendary-star\">★</div>" : "")
-                                + "</td><td style=\"background-color: " + cardCopiesColorState + ";\">" + "%.4f" + "</td><td>" +
-                                "%.6f" + "</td><td></td><td>" + "%.6f" +
-                                "</td><td>rarity:" + entry.getValue().getRarity()
-                                + "</td><td>set:" + entry.getValue().getSet()
-                                + "</td><td>" + cardClassesText
-                                + "</td><td>collection:" + cardCopiesState + "</td></tr>\n",
-                        entry.getValue().getCopiesWild(), entry.getValue().getRatingOverall(),
-                        entry.getValue().getRatingWild()));
+            JSONObject jsonObject = new JSONObject(entry.getValue());
+            jsonOutput.put(jsonObject);
         }
 
-        System.out.println("\nComplete crafting guide!\n");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("data", jsonOutput);
 
-        /* Generate HTML for the arena tierlist */
-        for (HashMap.Entry<Integer, CardData> entry : cardMap.entrySet()) {
-            cardMap.get(entry.getKey()).setRatingOverall(entry.getValue().getRatingArena());
-        }
-        cardMap2 = sortByValue(cardMap);
+        outputGlobal.append(jsonObject.toString());
 
-        for (HashMap.Entry<Integer, CardData> entry : cardMap2.entrySet()) {
-            cardClassesText = new StringBuilder();
-            if (entry.getValue().getClasses() != null) {
-                for (int i = 0; i < entry.getValue().getClasses().length(); i++) {
-                    cardClassesText.append("class:" + entry.getValue().getClasses().optString(i) + ", ");
-                }
-                cardClassesText.setLength(cardClassesText.length() - 2);
-            } else {
-                cardClassesText.append("class:").append(entry.getValue().getCardClass());
-            }
-
-//            if (Arrays.asList(arenaSets).contains(entry.getValue().getSet()))
-            outputArenaEN.append(String.format("<tr><td class=\"lazyload extended-gradient\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
-                            + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/"
-                            + entry.getValue().getId() + "\">" + entry.getValue().getNameEN() + "</a>"
-                            + ((entry.getValue().getRarity().equals("LEGENDARY")) ? "<div class=\"legendary-star\">★</div>" : "")
-                            + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" +
-                            "</td><td>rarity:" + entry.getValue().getRarity()
-                            + "</td><td>set:" + entry.getValue().getSet()
-                            + "</td><td>" + cardClassesText
-                            + "</td></tr>\n",
-                    entry.getValue().getCopiesArena(), entry.getValue().getRatingOverall()));
-//            if (Arrays.asList(arenaSets).contains(entry.getValue().getSet()))
-            outputArenaRU.append(String.format("<tr><td class=\"lazyload extended-gradient\" data-bg=\"https://art.hearthstonejson.com/v1/tiles/"
-                            + entry.getValue().getId() + ".png\"><a href=\"https://hsreplay.net/cards/"
-                            + entry.getValue().getId() + "\">" + entry.getValue().getNameRU() + "</a>"
-                            + ((entry.getValue().getRarity().equals("LEGENDARY")) ? "<div class=\"legendary-star\">★</div>" : "")
-                            + "</td><td>" + "%.4f" + "</td><td>" + "%.6f" +
-                            "</td><td>rarity:" + entry.getValue().getRarity()
-                            + "</td><td>set:" + entry.getValue().getSet()
-                            + "</td><td>" + cardClassesText
-                            + "</td></tr>\n",
-                    entry.getValue().getCopiesArena(), entry.getValue().getRatingOverall()));
-        }
-
-        System.out.println("\nComplete drafting guide!\n");
+        System.out.println("\nComplete!\n");
 
         /* Files generation */
         dateEN = new BufferedWriter(new FileWriter("../Site Dev/en/statistics/games/hearthstone/crafting-guide/current-date.php"));
@@ -533,21 +431,14 @@ public class Main {
         Files.copy(Paths.get("../Site Dev/en/statistics/games/hearthstone/crafting-guide/current-date.php"), Paths.get("../Site Dev/en/statistics/games/hearthstone/arena-tier-list/current-date.php"), REPLACE_EXISTING);
         Files.copy(Paths.get("../Site Dev/ru/statistics/games/hearthstone/crafting-guide/current-date.php"), Paths.get("../Site Dev/ru/statistics/games/hearthstone/arena-tier-list/current-date.php"), REPLACE_EXISTING);
 
-        outputEN.close();
-        outputArenaEN.close();
-        outputRU.close();
-        outputArenaRU.close();
+        outputGlobal.close();
 
         Files.copy(Paths.get("../Site Dev/en/statistics/games/hearthstone/crafting-guide/current-date.php"), Paths.get("../Site Release/en/statistics/games/hearthstone/crafting-guide/current-date.php"), REPLACE_EXISTING);
         Files.copy(Paths.get("../Site Dev/ru/statistics/games/hearthstone/crafting-guide/current-date.php"), Paths.get("../Site Release/ru/statistics/games/hearthstone/crafting-guide/current-date.php"), REPLACE_EXISTING);
         Files.copy(Paths.get("../Site Dev/en/statistics/games/hearthstone/arena-tier-list/current-date.php"), Paths.get("../Site Release/en/statistics/games/hearthstone/arena-tier-list/current-date.php"), REPLACE_EXISTING);
         Files.copy(Paths.get("../Site Dev/ru/statistics/games/hearthstone/arena-tier-list/current-date.php"), Paths.get("../Site Release/ru/statistics/games/hearthstone/arena-tier-list/current-date.php"), REPLACE_EXISTING);
 
-        Files.copy(Paths.get("../Site Dev/en/statistics/games/hearthstone/crafting-guide/cards-data.php"), Paths.get("../Site Release/en/statistics/games/hearthstone/crafting-guide/cards-data.php"), REPLACE_EXISTING);
-        Files.copy(Paths.get("../Site Dev/ru/statistics/games/hearthstone/crafting-guide/cards-data.php"), Paths.get("../Site Release/ru/statistics/games/hearthstone/crafting-guide/cards-data.php"), REPLACE_EXISTING);
-        Files.copy(Paths.get("../Site Dev/en/statistics/games/hearthstone/arena-tier-list/cards-data.php"), Paths.get("../Site Release/en/statistics/games/hearthstone/arena-tier-list/cards-data.php"), REPLACE_EXISTING);
-        Files.copy(Paths.get("../Site Dev/ru/statistics/games/hearthstone/arena-tier-list/cards-data.php"), Paths.get("../Site Release/ru/statistics/games/hearthstone/arena-tier-list/cards-data.php"), REPLACE_EXISTING);
-
+        Files.copy(Paths.get("../Site Dev/global/hearthstone-cards-data/cards-data.json"), Paths.get("../Site Release/global/hearthstone-cards-data/cards-data.json"), REPLACE_EXISTING);
     }
 
     private static <K, V extends Comparable<? super V>> HashMap<K, V> sortByValue(HashMap<K, V> map) {
