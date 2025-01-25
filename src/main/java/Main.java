@@ -81,6 +81,8 @@ public class Main {
             tempCard.setNameEN((String) jsonObject.get("name"));
             if (jsonObject.has("classes")) {
                 tempCard.setClasses(jsonObject.getJSONArray("classes"));
+            } else {
+                tempCard.setCardClass((String) jsonObject.get("cardClass"));
             }
             try {
                 tempCard.setRarity((String) jsonObject.get("rarity"));
@@ -91,7 +93,6 @@ public class Main {
                 tempCard.setSet(jsonObject.get("set").toString());
             }
             tempCard.setType((String) jsonObject.get("type"));
-            tempCard.setCardClass((String) jsonObject.get("cardClass"));
             if (jsonObject.has("set") &&
                     !(jsonObject.get("type").equals("HERO") && jsonObject.get("set").equals("CORE")) &&
                     !jsonObject.get("set").equals("HERO_SKINS")) {
@@ -411,6 +412,7 @@ public class Main {
             }
 
             JSONObject jsonObject = new JSONObject(entry.getValue());
+            jsonObject.put("cardClassesText", cardClassesText);
             jsonOutput.put(jsonObject);
         }
 
