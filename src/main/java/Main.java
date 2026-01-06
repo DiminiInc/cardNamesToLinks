@@ -472,6 +472,7 @@ public class Main {
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("charset", "utf-8");
+            connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:221.0) Gecko/20100101 Firefox/31.0"); // add this line to your code
             connection.connect();
             InputStream inStream = connection.getInputStream();
             json = streamToString(inStream);
