@@ -70,6 +70,7 @@ public class Main {
         outputGlobal = new BufferedWriter(new FileWriter("../Site Dev/global/hearthstone-cards-data/cards-data.json"));
         jsonOutput = new JSONArray();
         HashMap<Integer, CardData> cardMap = new HashMap<>();
+        HashMap<String, CardData> cardMapArena = new HashMap<>();
 
         /* Get cards data */
         String jsonString = jsonGetRequest("https://api.hearthstonejson.com/v1/latest/enUS/cards.collectible.json");
@@ -98,6 +99,7 @@ public class Main {
                     !(jsonObject.get("type").equals("HERO") && jsonObject.get("set").equals("CORE")) &&
                     !jsonObject.get("set").equals("HERO_SKINS")) {
                 cardMap.put((Integer) jsonObject.get("dbfId"), tempCard);
+                cardMapArena.put((String) jsonObject.get("id"), tempCard);
                 if (Arrays.asList(wildSets).contains(tempCard.getSet()))
                     if (tempCard.getRarity().equals("LEGENDARY"))
                         wildLegendary++;
@@ -276,78 +278,43 @@ public class Main {
         }
 
         /* Get Arena stats */
-        jsonStringTwoWeeks = jsonGetRequest("https://hsreplay.net/analytics/query/card_list_free/?GameType=ARENA&TimeRange=LAST_14_DAYS");
-        playedTwoWeeks = 0;
-        jsonObjectTwoWeeks = new JSONObject(jsonStringTwoWeeks).getJSONObject("series").getJSONObject("data");
+        jsonStringPatch = jsonGetRequest("https://hsreplay.net/api/v1/arena/card_stats/free/");
+        playedPatch = 0;
+        jsonObjectPatch = new JSONObject(jsonStringPatch).getJSONObject("data");
         json = jsonObjectTwoWeeks.getJSONArray("ALL");
         for (int i = 0; i < json.length(); i++) {
             JSONObject jsonObject = json.getJSONObject(i);
-            playedTwoWeeks += (int) jsonObject.get("times_played");
+            playedPatch += (int) jsonObject.get("times_played");
         }
 
-        jsonStringPatch = "{}";
-        playedPatch = 0;
-        try {
-            jsonStringPatch = jsonGetRequest("https://hsreplay.net/analytics/query/card_list_free/?GameType=ARENA&TimeRange=CURRENT_PATCH");
-            jsonObjectPatch = new JSONObject(jsonStringPatch).getJSONObject("series").getJSONObject("data");
-            json = jsonObjectPatch.getJSONArray("ALL");
-            for (int i = 0; i < json.length(); i++) {
-                JSONObject jsonObject = json.getJSONObject(i);
-                playedPatch += (int) jsonObject.get("times_played");
-            }
-        } catch (Exception ignored) {
-        }
-
-        jsonStringExpansion = "{}";
-        playedExpansion = 0;
-        try {
-            jsonStringExpansion = jsonGetRequest("https://hsreplay.net/analytics/query/card_list_free/?GameType=ARENA&TimeRange=CURRENT_EXPANSION");
-            jsonObjectExpansion = new JSONObject(jsonStringExpansion).getJSONObject("series").getJSONObject("data");
-            json = jsonObjectExpansion.getJSONArray("ALL");
-            for (int i = 0; i < json.length(); i++) {
-                JSONObject jsonObject = json.getJSONObject(i);
-                playedExpansion += (int) jsonObject.get("times_played");
-            }
-        } catch (Exception ignored) {
-        }
-
-        if ((playedExpansion < playedTwoWeeks) && (playedExpansion != 0))
-            if ((playedPatch < playedExpansion) && (playedPatch != 0))
-                jsonObj = new JSONObject(jsonStringPatch).getJSONObject("series").getJSONObject("data");
-            else
-                jsonObj = new JSONObject(jsonStringExpansion).getJSONObject("series").getJSONObject("data");
-        else if ((playedPatch < playedTwoWeeks) && (playedPatch != 0))
-            jsonObj = new JSONObject(jsonStringPatch).getJSONObject("series").getJSONObject("data");
-        else
-            jsonObj = new JSONObject(jsonStringTwoWeeks).getJSONObject("series").getJSONObject("data");
-        json = jsonObj.getJSONArray("ALL");
+        json = jsonObjectPatch.getJSONArray("ALL");
 
         for (int i = 0; i < json.length(); i++) {
             JSONObject jsonObject = json.getJSONObject(i);
-            if (cardMap.containsKey((Integer) jsonObject.get("dbf_id"))) {
-                cardMap.get((Integer) jsonObject.get("dbf_id")).setPopularityArena(((BigDecimal) jsonObject.get("included_popularity")).doubleValue());
-                cardMap.get((Integer) jsonObject.get("dbf_id")).setWinrateArena(((BigDecimal) jsonObject.get("included_winrate")).doubleValue());
-                cardMap.get((Integer) jsonObject.get("dbf_id")).setCopiesArena(((BigDecimal) jsonObject.get("included_count")).doubleValue());
+            if (cardMapArena.containsKey((String) jsonObject.get("card_id"))) {
+                cardMapArena.get((String) jsonObject.get("card_id")).setPopularityArena(((BigDecimal) jsonObject.get("popularity")).doubleValue());
+                cardMapArena.get((String) jsonObject.get("card_id")).setWinrateArena(((BigDecimal) jsonObject.get("win_rate")).doubleValue());
+                cardMapArena.get((String) jsonObject.get("card_id")).setCopiesArena(((BigDecimal) jsonObject.get("avg_copies_in_deck")).doubleValue());
             }
         }
 
         /* Calculate rating */
-        for (HashMap.Entry<Integer, CardData> entry : cardMap.entrySet()) {
-            cardMap.get(entry.getKey()).setRatingStandard(entry.getValue().getPopularityStandard() * entry.getValue()
+        for (HashMap.Entry<String, CardData> entry : cardMapArena.entrySet()) {
+            cardMapArena.get(entry.getKey()).setRatingStandard(entry.getValue().getPopularityStandard() * entry.getValue()
                     .getWinrateStandard() * 2 * (standardLegendary + standardOther * 2) / 300000);
-            cardMap.get(entry.getKey()).setRatingWild(entry.getValue().getPopularityWild() * entry.getValue()
+            cardMapArena.get(entry.getKey()).setRatingWild(entry.getValue().getPopularityWild() * entry.getValue()
                     .getWinrateWild() * 2 * (wildLegendary + wildOther * 2) / 300000);
-            cardMap.get(entry.getKey()).setRatingArena(entry.getValue().getPopularityArena() * entry.getValue()
+            cardMapArena.get(entry.getKey()).setRatingArena(entry.getValue().getPopularityArena() * entry.getValue()
                     .getWinrateArena() * 2 * (arenaLegendary + arenaOther * 2) / 300000);
-            cardMap.get(entry.getKey()).setRatingOverall(
+            cardMapArena.get(entry.getKey()).setRatingOverall(
                     entry.getValue().getRatingStandard() * playedStandard / (playedStandard + playedWild)
                             + entry.getValue().getRatingWild() * playedWild / (playedStandard + playedWild));
-            cardMap.get(entry.getKey()).setCopiesOverall(
+            cardMapArena.get(entry.getKey()).setCopiesOverall(
                     entry.getValue().getCopiesStandard() * playedStandard / (playedStandard + playedWild)
                             + entry.getValue().getCopiesWild() * playedWild / (playedStandard + playedWild));
             if (entry.getValue().isWild()) {
-                cardMap.get(entry.getKey()).setRatingStandard(-1);
-                cardMap.get(entry.getKey()).setCopiesOverall(entry.getValue().getCopiesWild());
+                cardMapArena.get(entry.getKey()).setRatingStandard(-1);
+                cardMapArena.get(entry.getKey()).setCopiesOverall(entry.getValue().getCopiesWild());
             }
         }
 
